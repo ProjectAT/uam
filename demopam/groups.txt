@@ -1,0 +1,6 @@
+correct,correct,correct
+errors,errors,errors
+failures,failures,failures
+infloop,infloop,infloop
+outofstack,outofstack,outofstack
+syntax,syntax,syntax

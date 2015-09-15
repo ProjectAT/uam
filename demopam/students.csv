@@ -1,0 +1,6 @@
+correct,cFirst,cLast,1111111111,cemail
+errors,eFirst,eLast,2222222222,eemail
+failures,fFirst,fLast,3333333333,femail
+infloop,iFirst,iLast,4444444444,iemail
+outofstack,oFirst,oLast,5555555555,oemail
+syntax,sFirst,sLast,6666666666,semail

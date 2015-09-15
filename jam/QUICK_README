@@ -1,0 +1,43 @@
+
+
+1) Compile JAM (if first time, or after changes to jam):
+
+cd jam
+
+./compile_jam.sh
+
+2) Compile the tests:
+
+./compile_tests.sh ~/at/uam/testjam/unittests/E2/e2tester/ ~/at/uam/testjam/solution/E2/
+
+3) Run the tests:
+
+(look at config.py)
+
+cd ..
+python3 test_runner.py
+
+
+4) Aggregate:
+
+python3 aggregator.py E2 testjam/dirs_and_names.txt testjam/students.csv testjam/groups.txt testjam/aggregated.json
+
+
+5) View the JSON if curious at: 
+
+http://www.jsoneditoronline.org/
+
+
+6) Template:
+
+anya@fluffy:~/at/uam$ python3 templator.py testjam/aggregated.json txt result.txt
+anya@fluffy:~/at/uam$ python3 templator.py testjam/aggregated.json gf result.gf
+Could not write individual report(s). Template is not installed. individual.tpl
+anya@fluffy:~/at/uam$ python3 templator.py testjam/aggregated.json markus result.markus
+Could not write individual report(s). Template is not installed. individual.tpl
+anya@fluffy:~/at/uam$
+
+
+Let me know what happens!
+
+A.

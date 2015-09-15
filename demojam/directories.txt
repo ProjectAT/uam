@@ -1,0 +1,6 @@
+testjam/submissions/correct/E2
+testjam/submissions/failures/E2
+testjam/submissions/infloop/E2
+testjam/submissions/nosubmission/E2
+testjam/submissions/nullpointer/E2
+testjam/submissions/syntax/E2

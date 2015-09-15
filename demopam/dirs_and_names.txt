@@ -1,0 +1,6 @@
+testpam/submissions/correct/asst,correct
+testpam/submissions/errors/asst,errors
+testpam/submissions/failures/asst,failures
+testpam/submissions/infloop/asst,infloop
+testpam/submissions/outofstack/asst,outofstack
+testpam/submissions/syntax/asst,syntax

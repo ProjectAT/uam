@@ -1,0 +1,64 @@
+Let's say we would like to grade A1.
+
+1) We need a directory named "submissions" in the uam directory,
+with the following structure:
+
+submissions/group_name/A1/...files...
+
+I usually create a symlink to wherever I want to have all my 
+submissions.
+
+One way to check out submissions from svn is to use a script
+.../uam/utils/checkoutRepos.sh
+
+This script needs an svn_repo_list file which you can get from
+MarkUs.
+
+2) We need the following lists:
+
+i) A classlist in the csv format:
+
+UTORID,first,last,student-number,email
+
+You can get this list from Blackboard.
+
+(Lets call this list classlist.csv, for the purposes of our example.)
+
+ii) A list of directory paths to individual submissions. 
+
+One way to create this list is by running the script
+.../uam/utils/listDirs.sh
+
+(Lets call this list A1_directories.txt, for the purposes of our example.)
+
+iii) A list of directory paths, together with repo names.
+
+One way to create this list is by running the script
+.../uam/utils/listDirsAndNames.sh
+
+(Lets call this list A1_dirs_and_names.txt, for the purposes of our example.)
+
+iv) A list of student groups in the format:
+
+group_name,group_repo,user_name1,user_name2,...
+
+You can get this list from MarkUs.
+
+(Lets call this list A1_groups.txt, for the purposes of our example.)
+
+3) Edit the file config.py.
+
+4) Run 
+ python3 test_runner.py
+
+5) Run 
+ python3 aggregator.py A1 A1_dirs_and_names.txt classlist.csv A1_groups.txt A1_aggregated.json
+
+6) Run 
+ python3 templator A1_aggregated.json txt A1_result.txt
+
+ python3 templator A1_aggregated.json gf A1_result.gf
+
+ python3 templator A1_aggregated.json markus A1_result.markus
+
+7) Email anya@cs.utoronto.ca if confused.

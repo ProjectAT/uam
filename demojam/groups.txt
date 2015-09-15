@@ -1,0 +1,6 @@
+correct,correct,correct
+failures,failures,failures
+infloop,infloop,infloop
+nosubmission,nosubmission,nosubmission
+nullpointer,nullpointer,nullpointer
+syntax,syntax,syntax

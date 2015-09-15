@@ -1,0 +1,31 @@
+./e2soln/E2.java:11: error: cannot find symbol
+    Graph<String> graph = new Graph<>();
+    ^
+  symbol:   class Graph
+  location: class E2
+./e2soln/E2.java:11: error: cannot find symbol
+    Graph<String> graph = new Graph<>();
+                              ^
+  symbol:   class Graph
+  location: class E2
+./e2soln/E2.java:27: error: cannot find symbol
+    } catch (NoSuchNodeException e) {
+             ^
+  symbol:   class NoSuchNodeException
+  location: class E2
+./e2soln/E2.java:36: error: cannot find symbol
+    } catch (NoSuchNodeException e) {
+             ^
+  symbol:   class NoSuchNodeException
+  location: class E2
+./e2soln/E2.java:45: error: cannot find symbol
+    } catch (NoSuchNodeException e1) {
+             ^
+  symbol:   class NoSuchNodeException
+  location: class E2
+./e2soln/E2.java:53: error: cannot find symbol
+    } catch (NoSuchNodeException e) {
+             ^
+  symbol:   class NoSuchNodeException
+  location: class E2
+6 errors
