@@ -1,10 +1,13 @@
 # Andrew Petersen (andrew.petersen@utoronto.ca)
 # May 8, 2014
 
+# Warning: Heavy use of os means this is probably a linux/unix only solution.
 import os
+import signal
 import sys
 import multiprocessing
 import subprocess
+
 import argparse
 import config
 
@@ -17,44 +20,43 @@ def execute_tests(student):
         print("%s: Directory not found" % student, file=sys.stderr)
         return
 
-    # Note1: I considered making the preamble and postamble Python code
+    # Note: I considered making the preamble and postamble Python code
     # (lambdas) but decided that most operations would be file system
-    # prep/cleanup best performed in the shell.
+    # prep/cleanup best performed in the shell. 
 
-    # Note2: Neither preamble nor postamble are protected by timeouts.
+    # Note: Neither preamble nor postamble are protected by timeouts.
 
-    # Note3: stdout and stderr in the subprocess calls could be redirected
+    # Note: stdout and stderr in the subprocess calls could be redirected
     # for debug support.
 
     if config.preamble_cmd:
         try:
-            subprocess.check_call(config.preamble_cmd,
-                                  stdout=None, stderr=None,
-                                  shell=True)
+            subprocess.check_call(config.preamble_cmd, stdout=None, stderr=None, shell=True)
         except subprocess.CalledProcessError as cpe:
-            print("%s: Preamble terminated with exit code %d" %
-                  (student, cpe.returncode), file=sys.stderr)
+            print("{0}: Preamble terminated abnormally".format(student), file=sys.stderr)
             return
 
+    # Note: Not using check_call since we need the PID in order to kill all
+    # descendents of the process. 
     for cmd in config.test_cmd:
+        proc = subprocess.Popen(cmd, start_new_session=True, shell=True)
         try:
-            subprocess.check_call(cmd, shell=True, timeout=config.timeout)
-        except subprocess.CalledProcessError as cpe:
-            print("%s: Test '%s' terminated with exit code %d" %
-                  (student, cmd, cpe.returncode), file=sys.stderr)
+            stdout_data, stderr_data = proc.communicate(timeout=config.timeout)
         except subprocess.TimeoutExpired:
             config.timeout_operation()
-
+            try:
+                os.killpg(proc.pid, signal.SIGTERM)   
+            except os.ProcessLookupError:
+                pass    # the process terminated after the timeout was generated
+        if proc.returncode != 0:
+            print("{0}: Test terminated abnormally".format(student), file=sys.stderr)
+        
     if config.postamble_cmd:
         try:
-            subprocess.check_call(config.postamble_cmd,
-                                  stdout=None, stderr=None,
-                                  shell=True)
+            subprocess.check_call(config.postamble_cmd, stdout=None, stderr=None, shell=True)
         except subprocess.CalledProcessError as cpe:
-            print("%s: Postamble terminated with exit code %d" %
-                  (student, cpe.returncode), file=sys.stderr)
+            print("{0}: Postamble terminated abnormally".format(student), file=sys.stderr)
             return
-
 
 if __name__ == "__main__":
     # Arguments #
