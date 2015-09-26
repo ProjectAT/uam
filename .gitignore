@@ -154,11 +154,12 @@ sympy-plots-for-*.tex/
 
 .recommenders
 doc/
+bin
 
 *.pydevproject
 .metadata
 .gradle
-bin/
+
 tmp/
 *.tmp
 *.bak
