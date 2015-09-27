@@ -315,6 +315,7 @@ class Reports:
         self.test_methods = test_methods if test_methods else []
         self.tests = []
         self.reports = []
+        self.reports_by_group = {}
         [self.add(report) for report in reports] if reports else None
 
     def add(self, report):
@@ -329,7 +330,15 @@ class Reports:
                 self.tests.append(test_name)
 
         self.reports.append(report)
+        self.reports_by_group[report.get_group()] = report
         return report
+
+    def get_report_by_group(self, group):
+        ''' (Reports, str) -> Report
+        Gets a Report by group id.
+        '''
+
+        return self.reports_by_group.get(group)
 
     def to_json(self):
         ''' (Reports) -> dict
