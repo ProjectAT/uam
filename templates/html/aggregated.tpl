@@ -59,9 +59,6 @@
                 // construct the main report listing table
                 $table.bootstrapTable({
                     columns: [[{
-                        title: 'Student Information',
-                        colspan: 5
-                    }].concat(testCaseNamesToColumns(tests)), [{
                         field: 'student_number',
                         title: 'Student #',
                         sortable: true
@@ -81,7 +78,7 @@
                         field: 'source',
                         title: 'Source Folder',
                         sortable: true
-                    }]],
+                    }].concat(testCaseNamesToColumns(tests))],
 
                     data: translateToRows(aggregated),
 
@@ -196,7 +193,7 @@
                     search: true,
                     detailView: true,
                     showColumns: true,
-                    minimumCountColumns: 4,
+                    minimumCountColumns: 1,
                 });
             });
 
@@ -293,7 +290,6 @@
                     column = {
                         field: testCaseName,
                         title: testCaseName,
-                        rowspan: 2,
                         sortable: true,
                         cellStyle: colourRatio,
                         visible: false,
