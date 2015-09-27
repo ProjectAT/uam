@@ -89,10 +89,7 @@ class Markus:
         """ (Markus, int) -> dict of str:int
         Return a dictionary mapping group names to group ids.
         """
-        params = None
-        path = self.get_path(assignment_id) + '/group_ids_by_name.json'
-        response = self.submit_request(params, path, 'GET')
-        return Markus.decode_response(response)
+        return {group['group_name']: group for group in self.get_groups(assignment_id)}
 
     def upload_test_results(self, assignment_id, group_name, title, contents):
         """ (Markus, int, str, str, str) -> list of str
@@ -112,7 +109,7 @@ class Markus:
         return self.submit_request(params, path, 'POST')
 
     def update_marks_single_group(self, criteria_mark_map,
-                                  assignment_id, group_name):
+                                  assignment_id, group_id):
         """ (Markus, dict, int, int) -> list of str
         Update the marks of a single group. 
         Only the marks specified in criteria_mark_map will be changed.
@@ -125,8 +122,6 @@ class Markus:
         assignment_id     -- the assignment's id
         group_name        -- the name of the group whose marks we are updating
         """
-        groupname_id_map = self.get_groups_by_name(assignment_id)
-        group_id = groupname_id_map[group_name]
         params = criteria_mark_map
         path = self.get_path(assignment_id, group_id) + 'update_marks'
         return self.submit_request(params, path, 'PUT')

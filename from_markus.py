@@ -7,7 +7,7 @@ Obtains a listing of all groups and repos for an assignment number
 from Markus.
 '''
 
-import markusapi
+import utils.markusapi
 import argparse
 import sys
 
@@ -21,7 +21,7 @@ def from_markus(api_key, url, assignment_number):
     groups = list()
     repos = list()
     try:
-        for group in markusapi.Markus(
+        for group in utils.markusapi.Markus(
             api_key,
             url
         ).get_groups(assignment_number):
