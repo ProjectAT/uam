@@ -1,6 +1,9 @@
+0) A suggestion to make set up of various assignments easier:
 
+ln -s demojam/submissions submissions
+ln -s demojam/config.py config.py
 
-1) Compile JAM (if first time, or after changes to jam):
+1) Compile JAM (if first time, or after changes to jam, or just in case :) ):
 
 cd jam
 
@@ -8,7 +11,8 @@ cd jam
 
 2) Compile the tests:
 
-./compile_tests.sh ~/at/uam/testjam/unittests/E2/e2tester/ ~/at/uam/testjam/solution/E2/
+./compile_tests.sh path-to-uam/uam/demojam/unittests/E2/e2tester/ path-to-uam/uam/demojam/solution/E2/
+where path-to-uam is an absolute path to where uam is.
 
 3) Run the tests:
 
@@ -20,7 +24,7 @@ python3 test_runner.py
 
 4) Aggregate:
 
-python3 aggregator.py E2 testjam/dirs_and_names.txt testjam/students.csv testjam/groups.txt testjam/aggregated.json
+python3 aggregator.py E2 demojam/dirs_and_names.txt demojam/students.csv demojam/groups.txt demojam/aggregated.json
 
 
 5) View the JSON if curious at: 
@@ -28,16 +32,10 @@ python3 aggregator.py E2 testjam/dirs_and_names.txt testjam/students.csv testjam
 http://www.jsoneditoronline.org/
 
 
-6) Template:
+6) Formatting various result files:
 
-anya@fluffy:~/at/uam$ python3 templator.py testjam/aggregated.json txt result.txt
-anya@fluffy:~/at/uam$ python3 templator.py testjam/aggregated.json gf result.gf
-Could not write individual report(s). Template is not installed. individual.tpl
-anya@fluffy:~/at/uam$ python3 templator.py testjam/aggregated.json markus result.markus
-Could not write individual report(s). Template is not installed. individual.tpl
-anya@fluffy:~/at/uam$
+python3 templator.py demojam/aggregated.json txt result.txt
+python3 templator.py demojam/aggregated.json gf result.gf
+python3 templator.py demojam/aggregated.json markus result.markus
+python3 templator.py demojam/aggregated.json html result.html
 
-
-Let me know what happens!
-
-A.

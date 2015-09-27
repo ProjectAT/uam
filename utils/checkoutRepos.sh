@@ -13,8 +13,8 @@
 # timestamp is in the  ISO 8601 format  YYYY-MM-DD HH:MM
 # NOTE: Unsure of behaviour if any information is required to access a repo
 
-URL=https://markus.utsc.utoronto.ca/svn/csca20s15 # checkout from
-TARGETDIR=/home/a08test/submissions              # checkout to
+URL=http://markus.utsc.utoronto.ca/svn/cscb07f15-new/ # checkout from
+TARGETDIR=/home/anya/b07/submissions                          # checkout to
 
 if [ $# -eq 0 ]; then
     echo Usage: $0 repolistfile [dir [timestamp]]

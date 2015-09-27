@@ -1,4 +1,0 @@
-./e2soln/Graph.java:8: error: class, interface, or enum expected
-I AM A SYNTAX ERROR
-^
-1 error
