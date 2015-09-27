@@ -137,7 +137,7 @@ public class Graph<T> {
   public void addEdge(Node<T> node1, Node<T> node2) 
       throws NoSuchNodeException {
 
-    if (!areAdjacent(node1, node2)) {
+    if (node1 != node2 && !areAdjacent(node1, node2)) {
       nodeToNeighbours.get(node1).add(node2);
       nodeToNeighbours.get(node2).add(node1);				
     }

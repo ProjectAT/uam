@@ -14,7 +14,7 @@ timeout_operation = lambda : open("timedout", "w").close()
 # File containing a list of student directories to test.
 # -- Each directory should be on its own line.
 # -- Each entry should be a relative path from the testing directory.
-students_fname = "testjam/directories.txt"
+students_fname = "demojam/directories.txt"
 
 # where are the templates?
 template_dir = "templates"
@@ -23,10 +23,10 @@ template_dir = "templates"
 # JAM path variables
 ##########
 # Path to the UAM install directory
-uamdirectory = "/home/anya/at/uam/"
+uamdirectory = "/u/anya/at/uam/"
 
 # Path to the JAM install directory
-jamdirectory = "/home/anya/at/uam/jam/"
+jamdirectory = "/u/anya/at/uam/jam/"
 
 # Path from submission directory to '/src/' directory containing the packages
 # being tested
@@ -39,7 +39,7 @@ exceptionexplanations = jamdirectory + "exceptionExplanations.xml"
 jamlibs = jamdirectory + "lib/*"
 
 # Path to JUnit test "root" directory
-jamtests = uamdirectory + "testjam/unittests/"
+jamtests = uamdirectory + "demojam/unittests/"
 
 # Path from JUnit test "root" directory to the test suite to be run
 jamtestsuite = "E2.e2tester.AllTests"
@@ -51,7 +51,7 @@ jampathtolog = uamdirectory + "runlog.txt"
 # Shell command to be performed before executing tests in a directory or None.
 # -- This command will be invoked from within the student's directory!
 preamble_cmd = None
-#preamble_cmd = "cp ../tester.py ."
+
 
 # List of shell commands that execute the tests in a single directory.
 # Warning: Some versions of shell don't like the >& redirect, so it's safer
