@@ -17,7 +17,7 @@ import argparse
 import json
 import sys
 
-LIMIT = 99999
+LIMIT = 999999
 
 def to_markus(username, password, url, assignment_number, aggregate, groups=None):
     ''' (str, str, str, int, dict, list) -> NoneType
@@ -28,24 +28,28 @@ def to_markus(username, password, url, assignment_number, aggregate, groups=None
     TestCase (not methods, but TestCases) exactly.
     '''
 
-    # start session with cookies enabled and login
-    s = requests.session()
-    login = s.post(url, data={
-        'user_login': username,
-        'user_password': password,
-        'commit': 'Log in',
-        'authenticity_token': get_auth_token(s, url)
-    })
+    try:
+        # start session with cookies enabled and login
+        s = requests.session()
+        login = s.post(url, data={
+            'user_login': username,
+            'user_password': password,
+            'commit': 'Log in',
+            'authenticity_token': get_auth_token(s, url)
+        })
 
-    # get group submission ids
-    reports = uam_utils.Reports.from_json(aggregate)
-    submissions = bs(
-        s.get(
-            '%s/assignments/%s/submissions/browse?per_page=%s'
-            % (url, assignment_number, LIMIT)
-        ).text,
-        'html.parser'
-    ).find(id="submissions").find_all('a')[:-7]
+        # get group submission ids
+        reports = uam_utils.Reports.from_json(aggregate)
+        submissions = bs(
+            s.get(
+                '%s/assignments/%s/submissions/browse?per_page=%s'
+                % (url, assignment_number, LIMIT)
+            ).text,
+            'html.parser'
+        ).find(id="submissions").find_all('a')[:-7]
+
+    except:
+        print('Error: Unable to connect to Markus')
     
     while submissions:
 
@@ -84,6 +88,8 @@ def to_markus(username, password, url, assignment_number, aggregate, groups=None
                                 )
                             )
 
+                            print('Attempting to update criterion %s..' % criteria_id)
+
                             # upload
                             response = s.post(
                                 (
@@ -92,15 +98,21 @@ def to_markus(username, password, url, assignment_number, aggregate, groups=None
                                 )
                                 % (url, assignment_number, submission_id, criteria_id),
                                 data={
-                                    'mark': reports
-                                        .get_report_by_group(group_id)
-                                        .get_test_passes(test_name),
+                                    'mark': (
+                                        reports
+                                            .get_report_by_group(group_id)
+                                            .get_test_passes(test_name)
+                                        if reports.get_report_by_group(group_id)
+                                        else 0
+                                    ),
                                     'authenticity_token': get_auth_token(s, url)
                                 }
                             )
 
                             if response.status_code == 200: break
-                        except: pass
+
+                        except Exception as e:
+                            print('Warning: Failed (%s)' % e)
 
                 # and finally, set as complete
                 response = s.post(
@@ -124,8 +136,8 @@ def get_auth_token(session, url):
         try:
             return re.findall(
                 'const AUTH_TOKEN = "(.*)"',
-                session.get(url).text)[0]
-            )
+                session.get(url).text
+            )[0]
         except: pass
 
 if __name__ == '__main__':
