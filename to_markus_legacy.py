@@ -17,8 +17,10 @@ import argparse
 import json
 import sys
 
-def to_markus(username, password, url, assignment_number, aggregate):
-    ''' (str, str, str, int, dict) -> NoneType
+LIMIT = 99999
+
+def to_markus(username, password, url, assignment_number, aggregate, groups=None):
+    ''' (str, str, str, int, dict, list) -> NoneType
     Transmits grades from an Aggregated json dict of Reports
     to MarkUs v1.3.
 
@@ -39,66 +41,92 @@ def to_markus(username, password, url, assignment_number, aggregate):
     reports = uam_utils.Reports.from_json(aggregate)
     submissions = bs(
         s.get(
-            '%s/assignments/%s/submissions/browse?per_page=99999'
-            % (url, assignment_number)
+            '%s/assignments/%s/submissions/browse?per_page=%s'
+            % (url, assignment_number, LIMIT)
         ).text,
         'html.parser'
     ).find(id="submissions").find_all('a')[:-7]
-    submission_map = {}
+    
     while submissions:
-        group_id = str(submissions.pop()).split('>')[-2].split('<')[0]
-        submission_id = str(submissions.pop()).split('/')[-3]
 
-        print('Uploading %s\'s grade to Markus..' % group_id)
+        # continue to attempt until successful
+        while True:
+            try:
+                group_id = str(submissions.pop()).split('>')[-2].split('<')[0]
+                submission_id = str(submissions.pop()).split('/')[-3]
 
-        # get rubric mark_id's
-        criteria = bs(
-            s.get(
-                '%s/assignments/%s/submissions/%s/results/%s/edit'
-                % (url, assignment_number, submission_id, submission_id)
-            ).text,
-            'html.parser'
-        ).find_all(class_='criterion_title')
+                # skip if not selected for upload
+                if groups and not group_id in groups:
+                    break
 
-        for criterion in criteria:
-            test_name = criterion.find(
-                'div',
-                class_='mark_criterion_title_div_level'
-            ).b.text
-            criteria_id = ''.join(
-                filter(
-                    lambda x: x.isdigit(),
-                    criterion.find(class_='mark_grade_input')['id']
+                print('Uploading %s\'s grade to Markus..' % group_id)
+
+                # get rubric mark_id's
+                criteria = bs(
+                    s.get(
+                        '%s/assignments/%s/submissions/%s/results/%s/edit'
+                        % (url, assignment_number, submission_id, submission_id)
+                    ).text,
+                    'html.parser'
+                ).find_all(class_='criterion_title')
+
+                for criterion in criteria:
+                    while True:
+                        try:
+                            test_name = criterion.find(
+                                'div',
+                                class_='mark_criterion_title_div_level'
+                            ).b.text
+                            criteria_id = ''.join(
+                                filter(
+                                    lambda x: x.isdigit(),
+                                    criterion.find(class_='mark_grade_input')['id']
+                                )
+                            )
+
+                            # upload
+                            response = s.post(
+                                (
+                                    '%s/assignments/%s/submissions/%s/results/update_mark'
+                                    + '?mark_id=%s'
+                                )
+                                % (url, assignment_number, submission_id, criteria_id),
+                                data={
+                                    'mark': reports
+                                        .get_report_by_group(group_id)
+                                        .get_test_passes(test_name),
+                                    'authenticity_token': get_auth_token(s, url)
+                                }
+                            )
+
+                            if response.status_code == 200: break
+                        except: pass
+
+                # and finally, set as complete
+                response = s.post(
+                    '%s/assignments/%s/submissions/%s/results/%s/update_marking_state'
+                    % (url, assignment_number, submission_id, submission_id),
+                    data={
+                        'value': 'complete',
+                        'authenticity_token': get_auth_token(s, url)
+                    }
                 )
-            )
 
-            # upload
-            s.post(
-                (
-                    '%s/assignments/%s/submissions/%s/results/update_mark'
-                    + '?mark_id=%s'
-                )
-                % (url, assignment_number, submission_id, criteria_id),
-                data={
-                    'mark': reports
-                        .get_report_by_group(group_id)
-                        .get_test_passes(test_name),
-                    'authenticity_token': get_auth_token(s, url)
-                }
-            )
-
-        # and finally, set as complete
-        s.post(
-            '%s/assignments/%s/submissions/%s/results/%s/update_marking_state'
-            % (url, assignment_number, submission_id, submission_id),
-            data={
-                'value': 'complete',
-                'authenticity_token': get_auth_token(s, url)
-            }
-        )
+                if response.status_code == 200: break
+            except: pass
     
 def get_auth_token(session, url):
-    return re.findall('const AUTH_TOKEN = "(.*)"', session.get(url).text)[0]
+    ''' (requests.Session, str) -> str
+    Gets an authenticity token from Markus to circumvent security measures.
+    '''
+
+    while True:
+        try:
+            return re.findall(
+                'const AUTH_TOKEN = "(.*)"',
+                session.get(url).text)[0]
+            )
+        except: pass
 
 if __name__ == '__main__':
 
@@ -128,6 +156,11 @@ if __name__ == '__main__':
         'assignment',
         help='The assignment number to obtain a listing for'
     )
+    parser.add_argument(
+        'groups',
+        nargs='+',
+        help='Groups to upload grades to; if unspecified, all groups selected'
+    )
     args = parser.parse_args()
 
     # write out listing
@@ -138,7 +171,8 @@ if __name__ == '__main__':
                 args.password,
                 args.url,
                 int(args.assignment),
-                json.loads(aggregated.read().strip())
+                json.loads(aggregated.read().strip()),
+                args.groups
             )
 
     except IOError as error:
