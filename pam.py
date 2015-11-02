@@ -22,7 +22,7 @@ import os
 import io
 import signal
 
-DEFAULT_TIMEOUT = 5
+DEFAULT_TIMEOUT = 10
 DEFAULT_VERBOSITY = 2
 
 def _default_formatter(exc):

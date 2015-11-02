@@ -11,7 +11,13 @@ fi
 UNITTEST_DIR=$1
 SOLUTION_DIR=$2
 JAMDIR=$(pwd)
-COMPILE_CP="-cp .:$JAMDIR/lib/jam.jar:$JAMDIR/lib/junit-4.12.jar:$JAMDIR/lib/hamcrest-core-1.3.jar:$JAMDIR/lib/gson-2.3.1.jar:$UNITTESTDIR:$SOLUTION_DIR"
+COMPILE_CP="-cp .:$JAMDIR/lib/jam.jar:$JAMDIR/lib/junit-4.12.jar:$JAMDIR/lib/hamcrest-core-1.3.jar:$JAMDIR/lib/gson-2.3.1.jar:$UNITTEST_DIR:$SOLUTION_DIR"
+
+
+echo $UNITTEST_DIR
+echo $SOLUTION_DIR
+echo $JAMDIR
+echo $COMPILE_CP
 
 cd $1
 javac -Xlint:unchecked $COMPILE_CP *.java
