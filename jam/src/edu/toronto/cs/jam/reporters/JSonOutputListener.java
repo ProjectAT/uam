@@ -90,7 +90,10 @@ public class JSonOutputListener extends RunListener {
 	    passed = true;
 	}
 
-	TestInfo thisInfo = new TestInfo(qualifiedName(desc), 
+	// make the key in the Map a fully qualified method name
+	methodName = qualifiedName(desc);
+
+	TestInfo thisInfo = new TestInfo(methodName, 
 					 description, 
 					 passed);
 	if (testInfo.containsKey(className)) {
@@ -112,7 +115,7 @@ public class JSonOutputListener extends RunListener {
 
 	recordOneFailure(failure,
 			 failure.getDescription().getClassName(), 
-			 failure.getDescription().getMethodName());
+			 qualifiedName(failure.getDescription()));
     }
 
     private void recordOneFailure(final Failure failure, String className,
