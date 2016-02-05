@@ -13,8 +13,8 @@
 # timestamp is in the  ISO 8601 format  YYYY-MM-DD HH:MM
 # NOTE: Unsure of behaviour if any information is required to access a repo
 
-URL=http://markus.utsc.utoronto.ca/svn/cscb07f15-new/ # checkout from
-TARGETDIR=/home/anya/b07/submissions                          # checkout to
+URL=http://markus.utsc.utoronto.ca/svn/csca48w16/ # checkout from
+TARGETDIR=/home/a08test/submissions                          # checkout to
 
 if [ $# -eq 0 ]; then
     echo Usage: $0 repolistfile [dir [timestamp]]
@@ -46,3 +46,6 @@ for svnrepo in `awk -F'/' '{print $(NF)}' $repolistfile`; do
   fi
   popd
 done
+
+# warn about all files containing non-utf8 characters
+find "$TARGETDIR" -type f -not -path '*/\.*' | xargs -I {} bash -c "iconv -f utf-8 -t utf-16 {} &>/dev/null || echo \"Warning: Found non-UTF8 characters in {}\"" 1>&2
