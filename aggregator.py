@@ -190,6 +190,9 @@ if __name__ == '__main__':
     parser.add_argument('output_file_name', nargs='?',
                         help='Name of the aggregated JSON output file',
                         default='aggregated.json')
+    parser.add_argument('source_files_name', nargs='?',
+                        help='Name of the source JSON input files',
+                        default=DEFAULT_JSON_FILE)
     args = parser.parse_args()
 
     # aggegate and write json out
@@ -197,7 +200,8 @@ if __name__ == '__main__':
         str(args.submission_dirs_and_names),
         str(args.students_file),
         str(args.groups_file),
-        str(args.assignment)
+        str(args.assignment),
+        str(args.source_files_name)
     ).to_json()
     with open(str(args.output_file_name), 'w') as report:
         report.write('%s\n' % test_report)
