@@ -1,10 +1,10 @@
-Autotested Results for {{ result.assignment }} submitted by {{ result.students | studentlist('%s %s (%s)', ['first', 'last', 'student_id']) | join(', ') }}
+Autotested Results for {{ result.assignment }} submitted by {{ result.students | student_list('%s %s (%s)', ['first', 'last', 'student_id']) | join(', ') }}
 Generated at {{ result.date }}
 
-Summary of Results: {{ result.results | getallcounts(0) }} out of {{ result.results | getallcounts(3) }} tests successfully passed
+Summary of Results: {{ result.results | get_all_counts(0) }} out of {{ result.results | get_all_counts(3) }} tests successfully passed
 --
 
-{% for test in result.results %}{% set test_num = [0] %}Tests for {{ test }} ({{ result.results[test] | getcounts(0) }}/{{ result.results[test] | getcounts(3) }} passed)
+{% for test in result.results %}{% set test_num = [0] %}Tests for {{ test }} ({{ result.results[test] | get_counts(0) }}/{{ result.results[test] | get_counts(3) }} passed)
 --
 
 {% for method in result.results[test].passes %}{% do test_num.insert(0, test_num[0] + 1) %}{% do test_num.pop() %}{{ test_num[0] }}) {{ ((result.results[test].passes[method] or method) | wordwrap) | ljust(82, 3) }} .. ok!

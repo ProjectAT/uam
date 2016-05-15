@@ -2,200 +2,247 @@
 
 ''' Report Templator -- a part of the UAM project at UofT
 Author: Kenneth Ma (2015), under supervision of Dr. Anya Tafliovich
-Author: Anya Tafliovich 2015
+Author: Anya Tafliovich 2015, 2016
 
 Creates both individual and aggregrated human readable reports from an
 aggregrated JSON report file given a template file (text, html, gf, etc).
 '''
 
 import json
-import jinja2
 import argparse
 import os
 import sys
 import re
-import config
+import jinja2
 
-DEFAULT_TEMPLATE_TYPE = 'txt'
-DEFAULT_AGGREGATE_TEMPLATE = 'aggregated.tpl'
-DEFAULT_INDIVIDUAL_TEMPLATE = 'individual.tpl'
-DEFAULT_JINJA_EXTENSIONS = ['jinja2.ext.do']
-DEFAULT_REPORT_NAME = 'report.txt'
+from defaults import (DEFAULT_TEMPLATE_TYPE, DEFAULT_AGGREGATE_TEMPLATE,
+                      DEFAULT_INDIVIDUAL_TEMPLATE, DEFAULT_JINJA_EXTENSIONS,
+                      DEFAULT_TEMPLATE_DIR, DEFAULT_REPORT_NAME)
 
+from plugins import *
 
-class AggregatedReport:
-    '''A human readable, templated, aggregated report (of all test
-    results for all student submissions).
-
-    '''
-
-    def __init__(self, reports, plugins=None,
-                 templateType=DEFAULT_TEMPLATE_TYPE,
-                 aggregateTemplateFile=DEFAULT_AGGREGATE_TEMPLATE,
-                 individualTemplateFile=DEFAULT_INDIVIDUAL_TEMPLATE):
+class TemplatedReport:
+    '''Parent class.'''
+    
+    def __init__(self,
+                 report,
+                 template_file,
+                 template_dir=DEFAULT_TEMPLATE_DIR,
+                 env=None,
+                 plugins=None,
+                 jinja_extns=DEFAULT_JINJA_EXTENSIONS,
+                 origin=None):
+        '''
+        ({str: dict}, str, jinja-env, [function], jijna-extns, str) -> NoneType
+        '''
+        
+        self._report = report
 
         if plugins is None:
             plugins = []
 
-        self._data, self._type = reports, templateType
+        self._template = _load_template(env, template_dir, template_file, plugins, jinja_extns)
 
-        # set up jinja2 environment
-        self._env = _set_up_jinja_env(templateType, plugins)
-
-        # load template
-        try:
-            self._template = self._env.get_template(aggregateTemplateFile)
-        except Exception as e:
-            self._template_error = e
-            self._template = None
-
-        # build a dict of all IndividualReports
-        self._individualReports = {
-            report['origin']: IndividualReport(report,
-                                               self._env,
-                                               plugins,
-                                               templateType,
-                                               individualTemplateFile)
-            for report in reports['results']}
-
-    def write_aggregate(self, target):
-        ''' (AggregatedReport, str) -> NoneType
-        Writes this AggregatedReport out to the file specified by target.
+        if origin:
+            self._report['origin'] = origin  # inject origin
+            
+            
+    def write(self, target):
+        ''' (TemplatedReport, str) -> NoneType
+        Write this TemplatedReport out to the file specified by target.
         '''
 
         if self._template:
-            open(target, 'w').write(str(self))
+            try:
+                with open(target, 'w') as trgt:
+                    trgt.write(str(self))
+            except IOError as err:
+                print('Cannot generate report %s: %s' % (target, err))
+                raise err
         else:
-            raise self._template_error
-
-    def write_individual(self, target):
-        ''' (AggregatedReport, str) -> NoneType
-        Write all individual reports to target.
-        '''
-
-        for report in self._individualReports.values():
-            report.write(target)
-
-    def __str__(self):
-        ''' (AggregatedReport) -> str
-        Renders this AggregatedReport.
-        '''
-
-        try:
-            return self._template.render(result=self._data)
-        except Exception as e:
-            print('Error: Unable to generate aggregated report. %s' % e,
+            print('Warning: cannot generate report %s. ' % target +
+                  'No template file.',
                   file=sys.stderr)
 
-    @staticmethod
-    def fromJson(sourceJson, templateType, plugins=None):
-        '''Produces an AggregatedReport from the given aggregated JSON file at
-        sourceJson using the given templateType.
+    def __str__(self):
+        ''' (TemplatedReport) -> str
+        Render this TemplatedReport.
         '''
 
-        if plugins is None:
-            plugins = []
-
-        try:
-            json_report = json.loads(open(sourceJson).read())
-        except IOError as e:
-            print("Cannot open json file. %s" % e, file=sys.stderr)
-            raise e
-        except Exception as e:
-            print("Cannot load json file. %s" % e, file=sys.stderr)
-            raise e
-
-        return AggregatedReport(json_report,
-                                plugins,
-                                templateType)
+        return self._template.render(result=self._report)
 
 
-class IndividualReport:
+class IndividualReport(TemplatedReport):
     ''' A human readable, templated, individual report of test results.
     '''
 
-    def __init__(self, report, env=None, plugins=None,
-                 templateType=DEFAULT_TEMPLATE_TYPE,
-                 templateFile=DEFAULT_INDIVIDUAL_TEMPLATE,
+    def __init__(self,
+                 report,
+                 template_file,
+                 template_dir=DEFAULT_TEMPLATE_DIR,
+                 env=None,
+                 plugins=None,
+                 jinja_extns=DEFAULT_JINJA_EXTENSIONS,
                  origin=None):
+        '''
+        ({str: dict}, jinja-env, [function], str, jijna-extns, str) -> NoneType
+        '''
+        
+        TemplatedReport.__init__(self, report, template_file, template_dir,
+                                 env, plugins, jinja_extns, origin)
 
-        if plugins is None:
-            plugins = []
-
-        if env is None:
-            self._env = _set_up_jinja_env(templateType, plugins)
-        else:
-            self._env = env
-
-        self._data, self._type = report, templateType
-
-        # load template
-        try:
-            self._template = self._env.get_template(templateFile)
-        except Exception as e:
-            self._template_error = e
-            self._template = None
-
-        if origin:  # in case this report was not "aggregated"
-            self._data['origin'] = origin
 
     def write(self, target):
         ''' (IndividualReport, str) -> NoneType
         Writes this IndividualReport out to the file specified by target.
         '''
 
-        if self._template:
-            open(os.path.join(self._data['origin'], target),
-                 'w').write(str(self))
-        else:
-            raise self._template_error
+        TemplatedReport.write(self, os.path.join(self._report['origin'], target))
 
-    def __str__(self):
-        ''' (IndividualReport) -> str
-        Renders this IndividualReport.
+    @staticmethod 
+    def from_json(source_json,
+                  template_file,
+                  template_dir=DEFAULT_TEMPLATE_DIR,
+                  plugins=None,
+                  jinja_extns=DEFAULT_JINJA_EXTENSIONS,
+                  origin=None):
+        '''Produces an IndividualReport from the given individual JSON file at
+        source_json using the given template_file.
+
         '''
 
         try:
-            return self._template.render(result=self._data)
-        except Exception as e:
-            print('Warning: Unable to generate individual report for %s: %s.'
-                  % (self._data['origin'], e),
-                  file=sys.stderr)
-
-    @staticmethod
-    def fromJson(sourceJson, plugins=None,
-                 templateType=DEFAULT_TEMPLATE_TYPE,
-                 templateFile=DEFAULT_INDIVIDUAL_TEMPLATE,
-                 origin=None):
-        '''Produces an IndividualReport from the given aggregated JSON file at
-        sourceJson using the given templateType.
-        '''
-
-        if plugins is None:
-            plugins = []
-
-        try:
-            json_report = json.loads(open(sourceJson).read())
-        except IOError as e:
-            print("Cannot open json file. %s" % e, file=sys.stderr)
-            raise e
-        except Exception as e:
-            print("Cannot load json file. %s" % e, file=sys.stderr)
-            raise e
+            with open(source_json) as source:
+                json_report = json.loads(source.read())
+        except IOError as err:
+            print("Cannot open individual json file. %s" % err, file=sys.stderr)
+            raise err
 
         return IndividualReport(json_report,
+                                template_file,
+                                template_dir,
                                 None,
                                 plugins,
-                                templateType,
-                                templateFile,
+                                jinja_extns,
                                 origin)
 
 
-def _set_up_jinja_env(templateType, plugins):
+class AggregateReport(TemplatedReport):
+    '''A human readable, templated, aggregated report (of all test
+    results for all student submissions).
+
+    '''
+
+    def __init__(self,
+                 report_dict,
+                 template_file,
+                 template_dir=DEFAULT_TEMPLATE_DIR,
+                 plugins=None,
+                 jinja_extns=DEFAULT_JINJA_EXTENSIONS):
+        '''
+        ({str: {str: dict}}, [function], str, jinja-extns) -> NoneType
+        '''
+
+        TemplatedReport.__init__(self, report_dict, template_file,
+                                 template_dir, None, plugins, jinja_extns,
+                                 None)
+
+    @staticmethod 
+    def from_json(source_json,
+                  template_file,
+                  template_dir=DEFAULT_TEMPLATE_DIR,
+                  plugins=None,
+                  jinja_extns=DEFAULT_JINJA_EXTENSIONS):
+        '''Produces an AggregatelReport from the given aggregate JSON file at
+        source_json using the given template_file.
+
+        '''
+        try:
+            with open(source_json) as source:
+                json_report = json.loads(source.read())
+        except IOError as err:
+            print("Cannot open individual json file. %s" % err, file=sys.stderr)
+            raise err
+
+        return AggregateReport(json_report,
+                               template_file,
+                               template_dir,
+                               plugins,
+                               jinja_extns)
+
+
+class IndividualReports(TemplatedReport):
+    '''A collection of human readable, templated, individual reports (of
+    test results).
+
+    '''
+
+    def __init__(self,
+                 report_dict,
+                 template_file,
+                 template_dir=DEFAULT_TEMPLATE_DIR,
+                 plugins=None,
+                 jinja_extns=DEFAULT_JINJA_EXTENSIONS):
+        '''
+        ({str: {str: dict}}, [function], str, jinja-extns) -> NoneType
+        '''
+
+        self._individual_reports = {
+            report['origin']: IndividualReport(report,
+                                               template_file,
+                                               template_dir,
+                                               None,
+                                               plugins,
+                                               jinja_extns,
+                                               None)
+            for report in report_dict['results']}
+
+    def write(self, target):
+        ''' (IndividualReports, str) -> NoneType
+        Write all individual reports to target.
+        '''
+
+        for report in self._individual_reports.values():
+            report.write(target)
+
+    @staticmethod 
+    def from_json(source_json,
+                  template_file,
+                  template_dir=DEFAULT_TEMPLATE_DIR,
+                  plugins=None,
+                  jinja_extns=DEFAULT_JINJA_EXTENSIONS):
+        '''Produces IndividualReports from the given aggregate JSON file at
+        source_json using the given template_file.
+
+        '''
+
+        try:
+            with open(source_json) as source:
+                json_report = json.loads(source.read())
+        except IOError as err:
+            print("Cannot open  json file. %s" % err, file=sys.stderr)
+            raise err
+
+        return IndividualReports(json_report,
+                                 template_file,
+                                 template_dir,
+                                 plugins,
+                                 jinja_extns)
+
+
+def _load_template(env, template_dir, template_file, plugins, jinja_extns):
+    if env is None:
+        env = _set_up_jinja_env(template_dir, plugins, jinja_extns)
+    try:
+        return env.get_template(template_file)
+    except jinja2.TemplateNotFound:
+        return None
+
+
+def _set_up_jinja_env(template_dir, plugins, jinja_exts):
     env = jinja2.Environment(
-        loader=jinja2.FileSystemLoader(
-            os.path.join(config.template_dir, templateType)),
-        extensions=DEFAULT_JINJA_EXTENSIONS)
+        loader=jinja2.FileSystemLoader(template_dir),
+        extensions=jinja_exts)
 
     # populate jinja environment with our custom filters
     for plugin in plugins:
@@ -203,174 +250,102 @@ def _set_up_jinja_env(templateType, plugins):
 
     return env
 
-###############################################################################
-# custom filters for jinja2 defined below
-# TODO: clean up hacky stuff!
+
+def individual_report(source, plugins, template_file,
+                      template_dir, jinja_extns, origin, output):
+    individual_report = IndividualReport.from_json(
+        source, template_file, template_dir,
+        plugins, jinja_extns, origin)
+    individual_report.write(output)
 
 
-def studentList(students, format_str, fields):
-    ''' (list of dict, str, list of str) -> list of str
-    Prepares a list of student fields from a list of dictionaries representing
-    aggregator.UTSCStudents in the given format with respective fields.
-    '''
-
-    return [format_str % tuple([student.get(field) for field in fields])
-            for student in students]
-
-
-def getAllCounts(results, select):
-    ''' (dict of dicts) -> int
-    Gets either the number of passes, failures, errors, and total of the given
-    results dictionary depending on select (from the respective order) for all
-    TestCases.
-    '''
-
-    return sum([getCounts(test, select) for test in results.values()])
+def aggregate_report(source, plugins, template_file, template_dir,
+                     jinja_extns, output):
+    aggregate_report = AggregateReport.from_json(source,
+                                                 template_file,
+                                                 template_dir,
+                                                 plugins,
+                                                 jinja_extns)
+    aggregate_report.write(output)
 
 
-def getCounts(results, select):
-    ''' (dict of dicts/lists) -> int
-    Gets either the number of passes, failures, errors, or total of the given
-    results dictionary depending on select (from the respective order) for a
-    single TestCase.
-    '''
-    select = ['passes', 'failures', 'errors', 'total'][select]
-
-    return (len(results.get(select)) if results.get(select) else 0
-            if select != 'total' else
-            sum([getCounts(results, i) for i in range(3)]))
-
-
-def ljust(text, amount, offsetAfterFirst=0):
-    ''' (str, int) -> str
-    Pads the given text with spaces on the left until its length is the given
-    amount -- in otherwords, right justify text. Every line after the first
-    will be offset to the left offsetAfterFirst spaces.
-    '''
-
-    return '\n'.join([line.ljust(amount + int(bool(i)) * offsetAfterFirst)
-                      for i, line in enumerate(text.split('\n'))])
-
-
-def toGfNames(name):
-    ''' (str) -> str
-    Converts all non-compliant (non alphanumeric including the underscore)
-    characters to underscores for usage as a grade name in a standard .gf
-    file as specified by:
-
-    http://www.cdf.toronto.edu/~clarke/grade/fileformat.shtml
-    '''
-
-    return re.sub('[^A-Za-z0-9_]', '_', name)
-
-
-def exclude(collection, exclusions):
-    ''' (list, list) -> list
-    Removes any elements that contain exclusions from collection.
-    '''
-
-    return [element for element in collection
-            if not _isExcluded(element, exclusions)]
-
-
-def _isExcluded(word, exclusions):
-    ''' (str, list of str) -> bool
-    Determines whether word contains any string from exclusions.
-    '''
-
-    return any([exclusion in word for exclusion in exclusions])
-
-
-def passed(testName, results):
-    ''' (str, dict{str:dict{str: dict{str: str or dict}}}) -> int
-    Returns 1 if the test testName is a key in any TestCase's passes dict
-    in results and 0 otherwise.
-    '''
-
-    # flatten passes from all TestCases
-    passes = set()
-    [passes.update((testCase.get('passes') or {}).keys())
-     for testCase in results.values()]
-
-    return int(testName in passes)
-
-
-def getBalancedWeight(tests):
-    ''' (list) -> int
-    Calculates the equally weighted value of an individual test from a
-    collection of tests.
-    '''
-
-    return round(1 / len(tests) * 100, 3)
+def individual_reports(source, plugins, template_file,
+                       template_dir, jinja_extns, output):
+    individual_reports = IndividualReports.from_json(source,
+                                                     template_file,
+                                                     template_dir,
+                                                     plugins,
+                                                     jinja_extns)
+    individual_reports.write(output)
 
 
 if __name__ == '__main__':
 
-    help_all = 'If neither -i nor -a are specified, all reports are generated.'
+    HELP_ALL = 'If neither -i nor -a are specified, all reports are generated.'
 
     # get options
-    parser = argparse.ArgumentParser(
-        description=('Convert an aggregated JSON file ' +
+    PARSER = argparse.ArgumentParser(
+        description=('Convert JSON file(s) (individual, aggregated, or both) ' +
                      'into human readable format'))
-    parser.add_argument('-i', '--individual', action="store_true",
+    PARSER.add_argument('-i', '--individual', action="store_true",
                         help=('Produce a single individual report. ' +
-                              help_all))
-    parser.add_argument('-a', '--aggregate', action="store_true",
+                              HELP_ALL))
+    PARSER.add_argument('-a', '--aggregate', action="store_true",
                         help=('Produce a single aggregated report. ' +
-                              help_all))
-    parser.add_argument('source_json',
-                        help='Path to (aggregated or individual) JSON file')
-    parser.add_argument('template_type',
-                        help='Type of template to use (txt/gf/markus)')
-    parser.add_argument('output_file_name', nargs='?',
-                        help='Filename for templated report output',
+                              HELP_ALL))
+    PARSER.add_argument('-o', '--output', action="store_true",
+                        help='Filepath for templated report output.' +
+                        HELP_ALL,
                         default=DEFAULT_REPORT_NAME)
-    args = parser.parse_args()
+    PARSER.add_argument('--template_dir', action="store_true",
+                        help=('Directory that contains the templates.' + HELP_ALL),
+                        default=DEFAULT_TEMPLATE_DIR)
+    PARSER.add_argument('--template_individual', action="store_true",
+                        help=('Filepath for template file to use for ' +
+                              'templating individual reports.' + HELP_ALL),
+                        default=DEFAULT_INDIVIDUAL_TEMPLATE)
+    PARSER.add_argument('--template_aggregate', action="store_true",
+                        help=('Filepath for template file to use for ' +
+                              'templating aggregate reports.' + HELP_ALL),
+                        default=DEFAULT_AGGREGATE_TEMPLATE)
+    PARSER.add_argument('--jinja_extensions', action="store_true",
+                        help=('Jinja extension. ' + HELP_ALL),
+                        default=DEFAULT_JINJA_EXTENSIONS)
+    PARSER.add_argument('source_json',
+                        help='Path to (aggregated or individual) JSON file.')
+    PARSER.add_argument('template_type', nargs='?',
+                        help='Type of template to use (txt/gf/markus/html).',
+                        default=DEFAULT_TEMPLATE_TYPE)
+    ARGS = PARSER.parse_args()
 
-    plugins = [studentList, getAllCounts, getCounts, ljust,
-               toGfNames, exclude, passed, getBalancedWeight]
+    PLUGINS = [student_list, get_all_counts, get_counts, ljust,
+               to_gf_names, exclude, passed, get_balanced_weight]
 
-    if args.individual:
-        try:
-            individual_report = IndividualReport.fromJson(
-                args.source_json,
-                plugins,
-                args.template_type,
-                DEFAULT_INDIVIDUAL_TEMPLATE,
-                os.path.dirname(args.source_json))
-            individual_report.write(args.output_file_name)
-            exit(0)
-        except Exception as e:
-            print("Cannot create an Individual report. %s" % e,
-                  file=sys.stderr)
+    OUTPUT = '%s.%s' % (ARGS.output, ARGS.template_type)
+    
+    if ARGS.individual:
+        individual_report(ARGS.source_json,
+                          PLUGINS,
+                          os.path.join(ARGS.template_type, ARGS.template_individual),
+                          ARGS.template_dir,
+                          ARGS.jinja_extensions,
+                          os.path.dirname(ARGS.source_json),
+                          OUTPUT)
+        exit(0)
 
-    try:
-        aggregate_report = AggregatedReport.fromJson(args.source_json,
-                                                     args.template_type,
-                                                     plugins)
-    except Exception as e:
-        print("Cannot create an Aggregate report. %s" % e, file=sys.stderr)
-        exit(1)
+    aggregate_report(ARGS.source_json,
+                     PLUGINS,
+                     os.path.join(ARGS.template_type, ARGS.template_aggregate),
+                     ARGS.template_dir,
+                     ARGS.jinja_extensions,
+                     OUTPUT)
 
-    try:
-        aggregate_report.write_aggregate(args.output_file_name)
-    except jinja2.exceptions.TemplateSyntaxError as e:
-        print('Could not write aggregate report. ' +
-              'Template has syntax issues. %s' % e,
-              file=sys.stderr)
-    except jinja2.exceptions.TemplateNotFound as e:
-        print('Could not write aggregate report. ' +
-              'Template is not installed. %s' % e,
-              file=sys.stderr)
+    if not ARGS.aggregate and not ARGS.individual:
+        individual_reports(ARGS.source_json,
+                           PLUGINS,
+                           os.path.join(ARGS.template_type, ARGS.template_individual),
+                           ARGS.template_dir,
+                           ARGS.jinja_extensions,
+                           OUTPUT)
+        exit(0)
 
-    try:
-        if not args.aggregate and not args.individual:
-            aggregate_report.write_individual(args.output_file_name)
-    except jinja2.exceptions.TemplateSyntaxError as e:
-        print('Could not write individual report(s). ' +
-              'Template has syntax issues. %s' % e,
-              file=sys.stderr)
-    except jinja2.exceptions.TemplateNotFound as e:
-        print('Could not write individual report(s). ' +
-              'Template is not installed. %s' % e,
-              file=sys.stderr)
