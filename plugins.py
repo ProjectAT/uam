@@ -7,12 +7,7 @@ Author: Anya Tafliovich 2015, 2016
 TODO: Needs some serious clean-up. Lots of hacks.
 '''
 
-import json
-import argparse
-import os
-import sys
 import re
-import jinja2
 
 def student_list(students, format_str, fields):
     ''' (list of dict, str, list of str) -> list of str
