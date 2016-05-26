@@ -15,13 +15,13 @@ timeout_operation = lambda : open("timedout", "w").close()
 # File containing a list of student directories to test.
 # -- Each directory should be on its own line.
 # -- Each entry should be a relative path from the testing directory.
-students_fname = "testpam/directories.txt"
+students_fname = "examples/pam/directories.txt"
 
 # Shell command to be performed before executing tests in a directory or None.
 # -- This command will be invoked from within the student's directory!
-preamble_cmd = ("cp /home/anya/at/uam/testpam/test_asst.py . ; " +
-                "cp /home/anya/at/uam/testpam/test_2_asst.py . ; " +
-                "cp /home/anya/at/uam/testpam/pep8.py . ;")
+preamble_cmd = ("cp /home/anya/at/uam/examples/pam/test_asst.py . ; " +
+                "cp /home/anya/at/uam/examples/pam/test_2_asst.py . ; " +
+                "cp /home/anya/at/uam/examples/pam/pep8.py . ;")
 
 
 # List of shell commands that execute the tests in a single directory.

@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Compiles a JUnit test suite with JAM included in the class path
 # Usage: ./compile_tests.sh unittestdirectory solutiondirectorywithpackages
 # TODO: Document me.

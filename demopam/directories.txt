@@ -1,7 +1,0 @@
-testpam/submissions/correct/asst
-testpam/submissions/errors/asst
-testpam/submissions/failures/asst
-testpam/submissions/infloop/asst
-testpam/submissions/outofstack/asst
-testpam/submissions/syntax/asst
-

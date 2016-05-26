@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Compiles the JAM source code and creates jam.jar
 
 JAMDIR=$(pwd)
