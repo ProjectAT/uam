@@ -52,13 +52,13 @@ You can get this list from MarkUs.
  python3 test_runner.py
 
 5) Run 
- python3 aggregator.py A1 A1_dirs_and_names.txt classlist.csv A1_groups.txt A1_aggregated.json
+ python3 aggregator.py A1 A1_dirs_and_names.txt classlist.csv A1_groups.txt result.json A1_aggregated.json
 
 6) Run 
- python3 templator A1_aggregated.json txt A1_result.txt
+ python3 templator.py A1_aggregated.json txt
 
- python3 templator A1_aggregated.json gf A1_result.gf
+ python3 templator.py A1_aggregated.json gf
 
- python3 templator A1_aggregated.json markus A1_result.markus
+ python3 templator.py A1_aggregated.json markus
 
 7) Email anya@cs.utoronto.ca if confused.

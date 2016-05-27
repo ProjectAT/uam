@@ -9,6 +9,7 @@ import multiprocessing
 import subprocess
 
 import argparse
+
 import config
 
 
@@ -47,7 +48,7 @@ def execute_tests(student):
             try:
                 os.killpg(proc.pid, signal.SIGTERM)   
             except os.ProcessLookupError:
-                pass    # the process terminated after the timeout was generated
+                pass  # the process terminated after the timeout was generated
         if proc.returncode != 0:
             print("{0}: Test terminated abnormally".format(student), file=sys.stderr)
         
@@ -59,7 +60,7 @@ def execute_tests(student):
             return
 
 if __name__ == "__main__":
-    # Arguments #
+    # Arguments
     parser = argparse.ArgumentParser(
         description='Executes unit tests on student code in each directory.')
 
@@ -71,7 +72,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    # Configuration and setup #
+    # Configuration and setup
     cwd = os.getcwd()
     student_dirs = \
         [os.sep.join([cwd, student])
@@ -80,5 +81,5 @@ if __name__ == "__main__":
 
     procs = multiprocessing.Pool(config.max_processes)
 
-    # Walk directories, executing testcode in each directory #
+    # Walk directories, executing testcode in each directory
     procs.map(execute_tests, student_dirs)

@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 ''' Report Templator -- a part of the UAM project at UofT
 Author: Kenneth Ma (2015), under supervision of Dr. Anya Tafliovich

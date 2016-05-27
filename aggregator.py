@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 '''Report Aggregator -- a part of the UAM project at UofT
 Author: Kenneth Ma (2015), under supervision of Dr. Anya Tafliovich
@@ -104,6 +104,7 @@ class TestReport:
                 print('Warning: no JSON result file for %s: %s' %
                       (dirpath, error),
                       file=sys.stderr)
+
                 continue
             except ValueError as error:
                 print('Warning: could not load JSON from %s. %s' %
