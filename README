@@ -1,64 +1,17 @@
-Let's say we would like to grade A1.
+UAM stands for Unified AutoMarker and it's a framework to test student assignments in a variety of programming
+languages, collect the results and export them using templates. It currently supports Python (PAM) and Java (JAM).
 
-1) We need a directory named "submissions" in the uam directory,
-with the following structure:
+The top level directory contains the framework scripts to be launched, the pam directory contains the Python AutoMarker
+with instructions and examples, the jam directory contains the Java AutoMarker with instructions and examples.
 
-submissions/group_name/A1/...files...
+REQUIREMENTS:
 
-I usually create a symlink to wherever I want to have all my 
-submissions.
+You need Python 3 installed in your system. Then, install the requirements listed in the file requirements.txt using pip
+(pip install -r /path_to_uam/requirements.txt). You can use virtualenv to avoid installing the packages system-wide
+(https://virtualenv.pypa.io).
 
-One way to check out submissions from svn is to use a script
-.../uam/utils/checkoutRepos.sh
+For JAM, you also need Java installed in your system.
 
-This script needs an svn_repo_list file which you can get from
-MarkUs.
 
-2) We need the following lists:
 
-i) A classlist in the csv format:
-
-UTORID,first,last,student-number,email
-
-You can get this list from Blackboard.
-
-(Lets call this list classlist.csv, for the purposes of our example.)
-
-ii) A list of directory paths to individual submissions. 
-
-One way to create this list is by running the script
-.../uam/utils/listDirs.sh
-
-(Lets call this list A1_directories.txt, for the purposes of our example.)
-
-iii) A list of directory paths, together with repo names.
-
-One way to create this list is by running the script
-.../uam/utils/listDirsAndNames.sh
-
-(Lets call this list A1_dirs_and_names.txt, for the purposes of our example.)
-
-iv) A list of student groups in the format:
-
-group_name,group_repo,user_name1,user_name2,...
-
-You can get this list from MarkUs.
-
-(Lets call this list A1_groups.txt, for the purposes of our example.)
-
-3) Edit the file config.py.
-
-4) Run 
- python3 test_runner.py
-
-5) Run 
- python3 aggregator.py A1 A1_dirs_and_names.txt classlist.csv A1_groups.txt result.json A1_aggregated.json
-
-6) Run 
- python3 templator.py A1_aggregated.json txt
-
- python3 templator.py A1_aggregated.json gf
-
- python3 templator.py A1_aggregated.json markus
-
-7) Email anya@cs.utoronto.ca if confused.
+Please send comments, feedback and bugs to anya@cs.utoronto.ca.

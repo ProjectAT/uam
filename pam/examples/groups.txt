@@ -3,4 +3,5 @@ errors,errors,errors
 failures,failures,failures
 infloop,infloop,infloop
 outofstack,outofstack,outofstack
+pep8fail,pep8fail,pep8fail
 syntax,syntax,syntax

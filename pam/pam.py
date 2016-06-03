@@ -21,8 +21,10 @@ import signal
 import sys
 import traceback
 import unittest
+
 import testtools
-from defaults import DEFAULT_TIMEOUT, DEFAULT_VERBOSITY
+
+from utils.defaults import DEFAULT_TIMEOUT, DEFAULT_VERBOSITY
 
 
 def _default_formatter(exc):

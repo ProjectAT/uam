@@ -1,6 +1,0 @@
-demojam/submissions/correct/E2
-demojam/submissions/failures/E2
-demojam/submissions/infloop/E2
-demojam/submissions/nosubmission/E2
-demojam/submissions/nullpointer/E2
-demojam/submissions/syntax/E2

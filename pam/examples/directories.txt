@@ -1,0 +1,8 @@
+pam/examples/submissions/correct/A1
+pam/examples/submissions/errors/A1
+pam/examples/submissions/failures/A1
+pam/examples/submissions/infloop/A1
+pam/examples/submissions/outofstack/A1
+pam/examples/submissions/pep8fail/A1
+pam/examples/submissions/syntax/A1
+

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Andrew Petersen (andrew.petersen@utoronto.ca)
 # May 8, 2014
 
@@ -40,7 +42,9 @@ def execute_tests(student):
     # Note: Not using check_call since we need the PID in order to kill all
     # descendents of the process. 
     for cmd in config.test_cmd:
-        proc = subprocess.Popen(cmd, start_new_session=True, shell=True)
+        env = os.environ.copy()
+        env['PYTHONPATH'] = ":".join(sys.path)
+        proc = subprocess.Popen(cmd, start_new_session=True, shell=True, env=env)
         try:
             stdout_data, stderr_data = proc.communicate(timeout=config.timeout)
         except subprocess.TimeoutExpired:

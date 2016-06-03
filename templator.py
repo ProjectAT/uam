@@ -8,18 +8,18 @@ Creates both individual and aggregrated human readable reports from an
 aggregrated JSON report file given a template file (text, html, gf, etc).
 '''
 
-import json
 import argparse
+import json
 import os
 import sys
+
 import jinja2
 
-from defaults import (DEFAULT_TEMPLATE_TYPE, DEFAULT_AGGREGATE_TEMPLATE,
-                      DEFAULT_INDIVIDUAL_TEMPLATE, DEFAULT_JINJA_EXTENSIONS,
-                      DEFAULT_TEMPLATE_DIR, DEFAULT_REPORT_NAME)
-
-from plugins import (student_list, get_all_counts, get_counts, ljust,
-                     to_gf_names, exclude, passed, get_balanced_weight)
+from utils.defaults import (DEFAULT_TEMPLATE_TYPE, DEFAULT_AGGREGATE_TEMPLATE,
+                            DEFAULT_INDIVIDUAL_TEMPLATE, DEFAULT_JINJA_EXTENSIONS,
+                            DEFAULT_TEMPLATE_DIR, DEFAULT_REPORT_NAME)
+from utils.plugins import (student_list, get_all_counts, get_counts, ljust,
+                           to_gf_names, exclude, passed, get_balanced_weight)
 
 
 class TemplatedReport:

@@ -11,10 +11,10 @@ import datetime
 import json
 import os
 import sys
-from defaults import DEFAULT_IN_JSON_FILE, DEFAULT_OUT_JSON_FILE
 
-from uam_utils import Groups
-from uam_utils import Students
+from utils.defaults import DEFAULT_IN_JSON_FILE, DEFAULT_OUT_JSON_FILE
+from utils.uam_utils import Groups
+from utils.uam_utils import Students
 
 
 class TestReport:

@@ -9,6 +9,7 @@ TODO: Needs some serious clean-up. Lots of hacks.
 
 import re
 
+
 def student_list(students, format_str, fields):
     ''' (list of dict, str, list of str) -> list of str
     Prepares a list of student fields from a list of dictionaries representing

@@ -1,0 +1,54 @@
+All of the following assumes we are working at the top UAM directory.
+
+Let's say we would like to grade the assignment E2.
+
+1) We need a directory named "submissions" in the uam directory, with the following structure:
+submissions/group_name/A1/...files...
+
+TIPS:
+- I usually create a symlink to wherever I want to have all my submissions, e.g. run:
+  ln -s jam/examples/submissions/ submissions
+- You can get a script to check out all submissions from MarkUs.
+
+2) We need the following lists:
+
+2a) A classlist in the csv format:
+UTORID,first,last,student-number,email
+(let's call this list students.csv, for the purposes of our example)
+
+TIPS:
+- You can get this list from Blackboard.
+
+2b) A list of directory paths to individual submissions.
+(let's call this list directories.txt, for the purposes of our example)
+
+2c) A list of directory paths, together with repo names.
+(let's call this list dirs_and_names.txt, for the purposes of our example)
+
+2d) A list of student groups in the format:
+group_name,group_repo,user_name1,user_name2,...
+(let's call this list groups.txt, for the purposes of our example)
+
+TIPS:
+- You can get this list from MarkUs.
+
+3) Compile JAM and the tests (if first time, or after changes, or just in case :) ):
+cd jam/
+./compile_jam.sh
+./compile_tests.sh /path_to_uam/jam/examples/unittests/E2/e2tester/ /path-to-uam/jam/examples/solution/E2/
+
+4) Copy the file jam/examples/config.py to the top level directory and edit it.
+
+5) Run:
+cd ../
+python3 test_runner.py
+
+6) Aggregate results:
+python3 aggregator.py E2 jam/examples/dirs_and_names.txt jam/examples/students.csv jam/examples/groups.txt result.json aggregated.json
+
+7) Format results with one of:
+python3 templator.py aggregated.json txt
+python3 templator.py aggregated.json html
+python3 templator.py aggregated.json gf
+python3 templator.py aggregated.json markus
+

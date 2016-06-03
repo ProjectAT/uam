@@ -1,0 +1,6 @@
+jam/examples/submissions/correct/E2
+jam/examples/submissions/failures/E2
+jam/examples/submissions/infloop/E2
+jam/examples/submissions/nosubmission/E2
+jam/examples/submissions/nullpointer/E2
+jam/examples/submissions/syntax/E2

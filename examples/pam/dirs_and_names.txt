@@ -1,6 +1,0 @@
-examples/pam/submissions/correct/asst,correct
-examples/pam/submissions/errors/asst,errors
-examples/pam/submissions/failures/asst,failures
-examples/pam/submissions/infloop/asst,infloop
-examples/pam/submissions/outofstack/asst,outofstack
-examples/pam/submissions/syntax/asst,syntax
