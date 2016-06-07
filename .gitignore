@@ -1,8 +1,7 @@
-# root directory files
-/__pycache__/
 # IDE files
 .idea/
 # binary files
+__pycache__/
 *.class
 jam.jar
 # files to run examples

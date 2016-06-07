@@ -3,7 +3,7 @@ All of the following assumes we are working at the top UAM directory.
 Let's say we would like to grade the assignment E2.
 
 1) We need a directory named "submissions" in the uam directory, with the following structure:
-submissions/group_name/A1/...files...
+submissions/group_name/E2/...files...
 
 TIPS:
 - I usually create a symlink to wherever I want to have all my submissions, e.g. run:
