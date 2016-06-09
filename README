@@ -1,19 +1,39 @@
-UAM stands for Universal AutoMarker and it's a framework to test student assignments in a
-variety of programming languages, collect the results and export them using templates. It
-currently supports Python (PAM) and Java (JAM).
+UAM stands for Universal AutoMarker. It is a framework for testing
+student assignments written in a variety of programming languages,
+collecting the results, and exporting them for easy viewing using
+templates.
 
-The top level directory contains the framework scripts to be launched, the pam directory
-contains the Python AutoMarker with instructions and examples, the jam directory contains
-the Java AutoMarker with instructions and examples.
+We currently provide support for Python (pam) and Java (jam).
+
+We are working on supporting SQL (sqam) and Racket (ram).
+
+We welcome collaboration and contributions! Next on our list is
+Haskell (ham).
 
 REQUIREMENTS:
 
-You need Python 3 installed in your system. Then, install the requirements listed in the
-file requirements.txt using pip (pip install -r /path_to_uam/requirements.txt). You can use
-virtualenv to avoid installing the packages system-wide (https://virtualenv.pypa.io).
+You need Python >= 3.3 installed on your system. Then, install the
+requirements listed in the file requirements.txt. The easiest way to
+do this is to use pip:
 
-For JAM, you also need Java installed in your system.
+pip install -r /path_to_uam/requirements.txt
+
+You can use virtualenv to avoid installing the packages system-wide
+(https://virtualenv.pypa.io).
 
 
+To use JAM, you also need Java >= 7 installed in your system.
+
+USAGE:
+
+The top level directory contains the framework scripts (test runner,
+aggregator, and templator). The pam directory contains the Python
+AutoMarker with instructions and examples, and the jam directory
+contains the Java AutoMarker with instructions and examples.
+
+See README files for pam and jam for specific instructions.
+
+
+SUPPORT:
 
 Please send comments, feedback and bugs to anya@cs.utoronto.ca.
