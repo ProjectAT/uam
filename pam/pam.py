@@ -6,10 +6,8 @@ Author: Anya Tafliovich 2015, 2016
 
 Grade an individual student submission in the current working
 directory with given files containing unittest.TestCases and produce a
-UAM compatible JSON string, suitable for templating and later
-aggregation stages.
-
-TODO: change all names to pothole.
+UAM compatible JSON string, suitable for templating and aggregation
+stages.
 
 '''
 
@@ -37,8 +35,7 @@ def _default_formatter(exc):
 
 class TestResult:
     '''A result containing information (passes, failures, and errors) of
-    the all tests found in the current directory run at instantiation.
-
+    the all test runs.
     '''
 
     def __init__(self, test_files=None, timeout=DEFAULT_TIMEOUT,

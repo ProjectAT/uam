@@ -1,47 +1,85 @@
-All of the following assumes we are working at the top UAM directory.
 
-Let's say we would like to grade the assignment A1.
+I. SETUP.
 
-1) We need a directory named "submissions" in the uam directory, with the following structure:
-submissions/group_name/A1/...files...
+What you need:
 
-TIPS:
-- I usually create a symlink to wherever I want to have all my submissions, e.g. run:
-  ln -s pam/examples/submissions/ submissions
-- You can get a script to check out all submissions from MarkUs.
+1) Student submissions.
 
-2) We need the following lists:
+You need a file that lists all directories containing student
+submissions.  The demo (directory examples) ontains seven "student"
+submissions, from students "correct", "errors", "failures", "infloop",
+"outofstack", "pep8fail", and "syntax" (see directory
+pam/examples/submissions). Each submission is in a folder named A1.
+Therefore, you need the file (see directories.txt) with the following
+contents:
 
-2a) A classlist in the csv format:
-UTORID,first,last,student-number,email
-(let's call this list students.csv, for the purposes of our example)
+pam/examples/submissions/correct/A1
+pam/examples/submissions/errors/A1
+pam/examples/submissions/failures/A1
+pam/examples/submissions/infloop/A1
+pam/examples/submissions/outofstack/A1
+pam/examples/submissions/pep8fail/A1
+pam/examples/submissions/syntax/A1
 
-TIPS:
-- You can get this list from Blackboard.
+2) Student information.
 
-2b) A list of directory paths to individual submissions.
-(let's call this list directories.txt, for the purposes of our example)
+You need a classlist (see students.csv) in the following format:
 
-2c) A list of directory paths, together with repo names.
-(let's call this list dirs_and_names.txt, for the purposes of our example)
+student-id,first-name,last-name,student-number,email
 
-2d) A list of student groups in the format:
-group_name,group_repo,user_name1,user_name2,...
-(let's call this list groups.txt, for the purposes of our example)
+TIP: if you are at UofT, you can get this list from Blackboard.
 
-TIPS:
-- You can get this list from MarkUs.
+3) Group information.
 
-3) Copy the file pam/examples/config.py to the top level directory and edit it.
+If your students were working in groups and submitted one solution per
+group, then you need a file that records this information. It should
+be in the format (see groups.txt):
 
-4) Run:
+group-name,dir-name,student-id-1,student-id-2,...
+
+Actually, even if your students were working individually, you still
+need this file. In other words, we assume that students ALWAYS work in
+groups. When they work individually, the group size is 1, and you have
+a group per student.
+
+TIP: If you are using MarkUs, you can download this file from your
+MarkUs web inerface.
+
+4) Name matching.
+
+You need a file that matches submission directories with group
+names. See dirs_and_names.txt for an example.
+
+5) Your unittest files to be used to test each individual
+submission. Any additional files you need to run individual tests.
+
+
+II.  Run the tests.
+
+To run the tests, you need to modify the file config.py and place it
+in the same directory as test_runner.py.
+
+Look at the directory examples for a sample config.py file and sample
+input files.
+
+TIP: Especially if you plan to grade more than one piece of work, I
+suggest creating symlinks to your submissions directory and file
+config.py.
+
+Finally,
+
 python3 test_runner.py
 
-5) Aggregate results:
-python3 aggregator.py A1 pam/examples/dirs_and_names.txt pam/examples/students.csv pam/examples/groups.txt result.json aggregated.json
+If everything went well, you should have a .json file in each student
+submission directory.
 
-6) Format results with one of:
-python3 templator.py aggregated.json txt
-python3 templator.py aggregated.json html
-python3 templator.py aggregated.json gf
-python3 templator.py aggregated.json markus
+
+III.  Aggregate the results.
+
+python3 aggregator.py --help
+
+
+IV.  Produce templated reports.
+
+python3 templator.py --help
+
