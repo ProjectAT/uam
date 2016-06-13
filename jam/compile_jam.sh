@@ -8,5 +8,6 @@ echo $JAMDIR
 echo $COMPILE_CP
 
 javac $COMPILE_CP $(find src | grep ".java")
-cd src
+pushd src
 jar cf ../lib/jam.jar `find . | grep .class | grep -v "jam.tests"`
+popd

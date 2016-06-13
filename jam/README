@@ -63,14 +63,20 @@ b) For each @Test method, use the following annotations:
    @Test(timeout=XXX)
    @Description(description="description of your test method")
 
+6) Your solution (or solution stubs) to compile your tests.
 
-II.  Run the tests.
+II. Compile your tests.
+
+See compile_tests.sh.
+
+III.  Run the tests.
 
 To run the tests, you need to modify the file config.py and place it
 in the same directory as test_runner.py.
 
 Look at the directory examples for a sample config.py file and sample
 input files.
+
 
 TIP: Especially if you plan to grade more than one piece of work, I
 suggest creating symlinks to your submissions directory and file
@@ -84,12 +90,18 @@ If everything went well, you should have a .json file in each student
 submission directory.
 
 
-III.  Aggregate the results.
+IV.  Aggregate the results.
 
 python3 aggregator.py --help
 
+For our example:
+python3 aggregator.py E2 jam/examples/dirs_and_names.txt jam/examples/students.csv jam/examples/groups.txt result.json E2aggregated.json
 
-IV.  Produce templated reports.
+V.  Produce templated reports.
 
 python3 templator.py --help
 
+For our example:
+python3 templator.py E2aggregated.json txt       will produce all individual txt reports and an aggregate txt report
+python3 templator.py -a E2aggregated.json html   will produce an aggregate html report
+python3 templator.py -a E2aggregated.json gf     will produce an aggregate gf grades file

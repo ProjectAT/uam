@@ -155,7 +155,7 @@ public class Graph<T> {
     Node<T> node1 = getNode(id1);
     Node<T> node2 = getNode(id2);
 
-    if (!areAdjacent(node1, node2)) {
+    if (node1 != node2 && !areAdjacent(node1, node2)) {
       nodeToNeighbours.get(node1).add(node2);
       nodeToNeighbours.get(node2).add(node1);       
     }
