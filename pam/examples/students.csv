@@ -5,3 +5,4 @@ infloop,iFirst,iLast,4444444444,iemail
 outofstack,oFirst,oLast,5555555555,oemail
 pep8fail,pFirst,pLast,6666666666,pemail
 syntax,sFirst,sLast,7777777777,semail
+freeloader,frFirst,frLast,0000000000,fremail

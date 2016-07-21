@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
-''' Report Templator -- a part of the UAM project at UofT
+'''Report Templator.
 Author: Kenneth Ma (2015), under supervision of Dr. Anya Tafliovich
 Author: Anya Tafliovich 2015, 2016
 
-Creates both individual and aggregrated human readable reports from an
-aggregrated JSON report file given a template file (text, html, gf, etc).
+Given template file(s), create individual and/or aggregrated human
+readable reports from an aggregrated JSON report file.
+
 '''
 
 import argparse

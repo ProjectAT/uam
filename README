@@ -3,12 +3,13 @@ student assignments written in a variety of programming languages,
 collecting the results, and exporting them for easy viewing using
 templates.
 
-We currently provide support for Python (pam) and Java (jam).
+We currently provide full support for Python (pam) and Java (jam).
 
-We are working on supporting SQL (sqam) and Racket (ram).
+We are working on supporting SQL (sqam), Racket (ram), and Haskell
+(ham).
 
-We welcome collaboration and contributions! Next on our list is
-Haskell (ham).
+We welcome collaboration and contributions!
+
 
 REQUIREMENTS:
 
@@ -20,7 +21,6 @@ pip install -r /path_to_uam/requirements.txt
 
 You can use virtualenv to avoid installing the packages system-wide
 (https://virtualenv.pypa.io).
-
 
 To use JAM, you also need Java >= 7 installed in your system.
 

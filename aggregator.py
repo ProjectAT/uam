@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 
-'''Report Aggregator -- a part of the UAM project at UofT
+'''Report Aggregator.
 Author: Kenneth Ma (2015), under supervision of Dr. Anya Tafliovich
-Modified by A.Tafliovich 2016.
+Author: Anya Tafliovich 2015, 2016
+
+Given individual JSON report files, create an aggregrated JSON report
+file. Inject student/group information into the individual JSON report
+files.
 
 '''
 
@@ -37,7 +41,7 @@ class TestReport:
         students_file: classlist file in the format
           student_id,first_names,last_name,student_number,email
 
-       groups_file: file with student groups, in the format
+        groups_file: file with student groups, in the format
           group_name,dir_name,student_id_1,student_id_2,...
         Again, if you're using MarkUs, dir_name is the group's repo name.
 

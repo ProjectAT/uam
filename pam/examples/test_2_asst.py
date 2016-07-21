@@ -1,6 +1,7 @@
 import unittest
 import pep8  # from the current directory
 
+# It is necessary to import the student files this way.
 try:
     import asstfile
 except Exception:
