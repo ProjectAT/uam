@@ -9,28 +9,28 @@ except Exception:
 
 class TestRemoveDigits(unittest.TestCase):
     def test_empty_string(self):
-        ''' Testing remove_digits() with an empty string.
+        '''Testing remove_digits() with an empty string.
         '''
 
-        self.assertEqual(asstfile.remove_digits(''), '', 
-                         'The empty string should returned back from remove_digits(\'\').')
+        self.assertEqual(asstfile.remove_digits(''),
+                         '', 
+                         'Removing digits from the empty string should result in the empty string.')
 
     def test_no_digits(self):
-        ''' Testing remove_digits() with a string containing no digits.
+        '''Testing remove_digits() with a string containing no digits.
         '''
 
         self.assertEqual(asstfile.remove_digits('nope, there really aren\'t any digits here.'), 
                          'nope, there really aren\'t any digits here.', 
-                         'A string containing no digits should be returned unchanged.')
+                         'Removing digits from a string with no digits should result in the identical string.')
 
     def test_several_digits(self):
         '''Testing remove_digits() with a string containing multiple digits.
-
         '''
 
         self.assertEqual(asstfile.remove_digits('m435345u34534lti543543pl345e3 45d345i3g4534i5ts345'),
                          'multiple digits', 
-                         'Any string containing digits should have them removed.')
+                         'Removing digits from a string with multiple digits should result in a string with every digit removed.')
 
 
 class TestStyleAndDocstrings(unittest.TestCase):

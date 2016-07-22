@@ -1,8 +1,7 @@
-correct,cFirst,cLast,1111111111,cemail
-errors,eFirst,eLast,2222222222,eemail
-failures,fFirst,fLast,3333333333,femail
-infloop,iFirst,iLast,4444444444,iemail
-outofstack,oFirst,oLast,5555555555,oemail
-pep8fail,pFirst,pLast,6666666666,pemail
-syntax,sFirst,sLast,7777777777,semail
-freeloader,frFirst,frLast,0000000000,fremail
+correct,correctFirstName,correctLastName,1111111111,correctEmail
+failures,failuresFirstName,failuresLastName,2222222222,failuresEmail
+infloop,infloopFirstName,infloopLastName,3333333333,infloopEmail
+nosubmission,nosubFirstName,nosubLastName,4444444444,nosubEmail
+nullpointer,nullFirstName,nullLastName,5555555555,nullEmail
+syntax,syntaxErrorFirstName,syntaxErrorLastName,6666666666,syntaxErrorEmail
+freeloader,freeloaderFirstName,freeloaderLastName,7777777777,freeloaderEmail
