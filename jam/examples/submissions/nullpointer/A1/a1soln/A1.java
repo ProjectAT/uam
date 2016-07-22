@@ -12,6 +12,9 @@ public class A1 {
    */
   public <T> boolean myContains (List<T> list, T elt) {
     List<T> myList = null; // NULL POINTER EXN
+    if (list.size() > 1) {
+	myList = list;     // but not always
+    }
     for (T curr: myList) {
       if (curr.equals(elt)) {
         return true;

@@ -28,7 +28,7 @@ public class A1Test {
   @Test(timeout=TIMEOUT)
   @Description(description="empty input list")
   public void testEmpty() {
-    assertFalse("An empty list contains \"42\"!",
+    assertFalse("myContains(empty list, \"42\") should be false.",
         a1.myContains(list, "42"));
   }
 
@@ -36,7 +36,7 @@ public class A1Test {
   @Description(description="singleton input list that contains the element")
   public void testSingletonPresent() {
     list.add("42");
-    assertTrue("A list [\"42\"] does not contain \"42\"!",
+    assertTrue("myContains([\"42\"], \"42\") should be true.",
         a1.myContains(list, "42"));
   }
 
@@ -44,7 +44,7 @@ public class A1Test {
   @Description(description="singleton input list that does not contain the element")
   public void testSingletonNotPresent() {
     list.add("24");
-    assertFalse("A list [\"24\"] contains \"42\"!",
+    assertFalse("myContains([\"24\"], \"42\") should be false.",
         a1.myContains(list, "42"));
   }
 
@@ -54,7 +54,7 @@ public class A1Test {
     list.add("foo");
     list.add("bar");
     list.add("foobar");
-    assertFalse("A list [\"foo\", \"bar\", \"foobar\"] contains \"42\"!",
+    assertFalse("myContains([\"foo\", \"bar\", \"foobar\"], \"42\") should be false.",
         a1.myContains(list, "42"));
   }
 
@@ -65,7 +65,7 @@ public class A1Test {
     list.add("bar");
     list.add("42");
     list.add("foobar");
-    assertTrue("A list [\"foo\", \"bar\", \"42\", \"foobar\"] does not contain \"42\"!",
+    assertTrue("myContains([\"foo\", \"bar\", \"42\", \"foobar\"], \"42\") should be true.",
         a1.myContains(list, "42"));
   }
 }

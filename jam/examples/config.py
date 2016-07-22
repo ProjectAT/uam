@@ -22,8 +22,7 @@ timeout_operation = lambda: open('timedout', 'w').close()
 students_fname = os.path.join('jam', 'examples', 'directories.txt')
 
 # absolute path to uam
-#uam_dir = 'YOUR_PATH_TO_UAM'
-uam_dir = '/home/anya/at/uam'
+uam_dir = 'YOUR_PATH_TO_UAM'
 
 # path to jam
 jam_dir = os.path.join(uam_dir, 'jam')

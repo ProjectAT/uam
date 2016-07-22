@@ -135,22 +135,13 @@ public final class ExceptionExplainer {
             e.printStackTrace();
         }
     }
-
-
+   
     /**
      * Consruct a message for this failure (to write to JSON).
      * @param failure Failure for which the message is built
      * @return A message for this failure (to write to JSON)
      */
     public static String failureMessage(final Failure failure) {
-	if (failure.getException() instanceof java.lang.NoClassDefFoundError) {
-	    return "Missing a required class: " + failure.getMessage();
-	}
-	if (failure.getMessage() == null) {
-	    // if no message, then return the name of the Exception
-	    return failure.getException().toString();
-	}
-	return failure.getMessage();
+	return (failure.getMessage() == null) ? "" : failure.getMessage();
     }
-
 }
