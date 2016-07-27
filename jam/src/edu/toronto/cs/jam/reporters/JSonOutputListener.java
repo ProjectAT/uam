@@ -226,7 +226,7 @@ public class JSonOutputListener extends RunListener {
      * @return A qualified name of class:methodname for the given description
      */
     private String qualifiedName(final org.junit.runner.Description desc) {
-        return desc.getClassName() + ":" + desc.getMethodName();
+        return desc.getClassName() + "." + desc.getMethodName();
     }
 
     private String description(final org.junit.runner.Description desc) {

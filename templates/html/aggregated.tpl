@@ -218,7 +218,7 @@
                         row = $.extend({
                             id: assignment,
                             student_number: report.results[assignment].students[student].student_number,
-                            name: report.results[assignment].students[student].first + ' ' + report.results[assignment].students[student].last,
+                            name: report.results[assignment].students[student].last + ', ' + report.results[assignment].students[student].first,
                             utorid: report.results[assignment].students[student].student_id,
                             source: report.results[assignment].origin,
                             email: '<a href="mailto:' + report.results[assignment].students[student].email + '">' + report.results[assignment].students[student].email + '</a>'
