@@ -43,7 +43,7 @@ class TestResult:
                  formatter=_default_formatter):
         '''TODO: Document me.'''
 
-        print('Grading %s..' % os.getcwd())
+        print('Grading %s' % os.getcwd())
 
         self._timeout = timeout
         self._test_suite, self._result, self._buffer = \
