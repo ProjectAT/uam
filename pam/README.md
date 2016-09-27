@@ -37,9 +37,9 @@ Grading Instructions
 
    See `example_reldir/config.py`.
 
-4. Finally, run
+4. Finally, from your test case directory, run
 
-    `PYTHONPATH=. python3 path/to/test_runner.py`
+    `python3 path/to/test_runner.py`
 
    The absolute path of `test_runner.py` is not required if it is in your path. If everything went well, you should have a `.json` file in each student submission directory.
 

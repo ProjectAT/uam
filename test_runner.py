@@ -12,9 +12,6 @@ import subprocess
 
 import argparse
 
-import config
-
-
 # Warning: Some of the exceptions in this code are new to Python 3.3.
 def execute_tests(student):
     try:
@@ -71,10 +68,31 @@ if __name__ == "__main__":
     # For testing on a subset of student directories.
     parser.add_argument(
         "students_fname", nargs="?",
-        default=config.students_fname,
+        default=None,
         help="File containing a list of student directories to test.")
 
+    parser.add_argument('--confdir', nargs='+', default='.',
+                        help='Directory containing config.py.')
+
     args = parser.parse_args()
+
+    # Import config file from current directory as a last resort.
+    sys.path.append(args.confdir)
+
+    # Test to see if config works; abort with error if it does not.
+    try:
+        import config
+    except ImportError as exception:
+        sys.stderr.write('Unable to import config.py.\n')
+        sys.exit(1)
+
+    # Switch to config directory so that paths in config file, if specified relatively,
+    # still work.
+    os.chdir(args.confdir)
+
+    # Populate default value for list of student directories to test.
+    if args.students_fname == None:
+        args.students_fname = config.students_fname
 
     # Configuration and setup
     cwd = os.getcwd()
