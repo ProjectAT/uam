@@ -1,0 +1,8 @@
+submissions/correct/A1
+submissions/errors/A1
+submissions/failures/A1
+submissions/infloop/A1
+submissions/outofstack/A1
+submissions/pep8fail/A1
+submissions/syntax/A1
+
