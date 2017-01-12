@@ -165,7 +165,8 @@ class TestReport:
 
         # TODO: the else part may lead to bugs
         return (json.dumps({'results': self.results,
-                            'name': self.name, 'date': self.date,
+                            'name': self.name,
+                            'date': self.date,
                             'tests': sorted(self.tests)})
                 if self.results else '{}')
 

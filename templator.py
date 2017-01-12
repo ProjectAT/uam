@@ -312,23 +312,22 @@ def arguments():
     parser.add_argument('-a', '--aggregate', action="store_true",
                         help=('Produce a single aggregated report. ' +
                               help_all))
-    parser.add_argument('-o', '--output', action="store_true",
-                        help='Filepath for templated report output.' +
-                        help_all,
+    parser.add_argument('-o', '--output',
+                        help='Filepath for templated report output.',
                         default=DEFAULT_REPORT_NAME)
-    parser.add_argument('--template_dir', action="store_true",
+    parser.add_argument('--template_dir',
                         help=('Directory that contains the templates.' +
                               help_all),
                         default=DEFAULT_TEMPLATE_DIR)
-    parser.add_argument('--template_individual', action="store_true",
+    parser.add_argument('--template_individual',
                         help=('Filepath for template file to use for ' +
                               'templating individual reports.' + help_all),
                         default=DEFAULT_INDIVIDUAL_TEMPLATE)
-    parser.add_argument('--template_aggregate', action="store_true",
+    parser.add_argument('--template_aggregate',
                         help=('Filepath for template file to use for ' +
                               'templating aggregate reports.' + help_all),
                         default=DEFAULT_AGGREGATE_TEMPLATE)
-    parser.add_argument('--jinja_extensions', action="store_true",
+    parser.add_argument('--jinja_extensions',
                         help=('Jinja extension. ' + help_all),
                         default=DEFAULT_JINJA_EXTENSIONS)
     parser.add_argument('source_json',
