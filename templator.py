@@ -35,7 +35,13 @@ class TemplatedReport:
                  jinja_extns=None,
                  origin=None):
         '''
-        ({str: dict}, str, jinja-env, [function], jijna-extns, str) -> NoneType
+        TODO
+        report is Dict[str, dict] maps ?
+        template_file is the name of the file to use for templating
+        template_dir is the directory that contains template files
+        env id a jinja environment
+        plugins is a list of functions
+        jinja_extns is jinja extensions
         '''
 
         self._report = report
@@ -50,8 +56,8 @@ class TemplatedReport:
             self._report['origin'] = origin  # inject origin
 
     def write(self, target):
-        ''' (TemplatedReport, str) -> NoneType
-        Write this TemplatedReport out to the file specified by target.
+        '''Write this TemplatedReport out to target.
+        target is a path to the output file.
         '''
 
         if self._template:
@@ -59,16 +65,12 @@ class TemplatedReport:
                 with open(target, 'w') as trgt:
                     trgt.write(str(self))
             except IOError as err:
-                print('Cannot generate report %s: %s' % (target, err))
+                print('Cannot generate report {}: {}'.format(target, err))
         else:
-            print('Warning: cannot generate report %s. ' % target +
-                  'No template file.',
+            print('Warning: cannot generate report {}. No template file.'.format(target),
                   file=sys.stderr)
 
     def __str__(self):
-        ''' (TemplatedReport) -> str
-        Render this TemplatedReport.
-        '''
 
         return self._template.render(result=self._report)
 
@@ -86,15 +88,15 @@ class IndividualReport(TemplatedReport):
                  jinja_extns=None,
                  origin=None):
         '''
-        ({str: dict}, jinja-env, [function], str, jijna-extns, str) -> NoneType
+        TODO
         '''
 
         TemplatedReport.__init__(self, report, template_file, template_dir,
                                  env, plugins, jinja_extns, origin)
 
     def write(self, target):
-        ''' (IndividualReport, str) -> NoneType
-        Writes this IndividualReport out to the file specified by target.
+        '''Write this IndividualReport out to target.
+        target is a path to the output file.
         '''
 
         TemplatedReport.write(self,
@@ -107,8 +109,8 @@ class IndividualReport(TemplatedReport):
                   plugins=None,
                   jinja_extns=None,
                   origin=None):
-        '''Produces an IndividualReport from the given individual JSON file at
-        source_json using the given template_file.
+        '''Create an IndividualReport from the individual JSON file at
+        source_json, using template_file for templating.
 
         '''
 
@@ -116,7 +118,7 @@ class IndividualReport(TemplatedReport):
             with open(source_json) as source:
                 json_report = json.loads(source.read())
         except IOError as err:
-            print("Cannot open individual json file. %s" % err,
+            print('Cannot open individual json file: {}'.format(err),
                   file=sys.stderr)
             raise err
 
@@ -142,7 +144,7 @@ class AggregateReport(TemplatedReport):
                  plugins=None,
                  jinja_extns=None):
         '''
-        ({str: {str: dict}}, [function], str, jinja-extns) -> NoneType
+        TODO
         '''
 
         TemplatedReport.__init__(self, report_dict, template_file,
@@ -155,15 +157,16 @@ class AggregateReport(TemplatedReport):
                   template_dir=DEFAULT_TEMPLATE_DIR,
                   plugins=None,
                   jinja_extns=None):
-        '''Produces an AggregatelReport from the given aggregate JSON file at
-        source_json using the given template_file.
+        '''Create an AggregatelReport from aggregate JSON file at source_json,
+        using template_file for templating.
 
         '''
+
         try:
             with open(source_json) as source:
                 json_report = json.loads(source.read())
         except IOError as err:
-            print("Cannot open individual json file. %s" % err,
+            print('Cannot open aggregate json file: {}'.format(err),
                   file=sys.stderr)
             raise err
 
@@ -187,7 +190,7 @@ class IndividualReports:
                  plugins=None,
                  jinja_extns=None):
         '''
-        ({str: {str: dict}}, [function], str, jinja-extns) -> NoneType
+        TODO
         '''
 
         self._individual_reports = {
@@ -201,8 +204,8 @@ class IndividualReports:
             for report in report_dict['results']}
 
     def write(self, target):
-        ''' (IndividualReports, str) -> NoneType
-        Write all individual reports to target.
+        '''Write all individual reports to target.
+        target is a file object.
         '''
 
         for report in self._individual_reports.values():
@@ -214,8 +217,8 @@ class IndividualReports:
                   template_dir=DEFAULT_TEMPLATE_DIR,
                   plugins=None,
                   jinja_extns=None):
-        '''Produces IndividualReports from the given aggregate JSON file at
-        source_json using the given template_file.
+        '''CreateIndividualReports from aggregate JSON file at source_json,
+        using template_file for templating.
 
         '''
 
@@ -223,7 +226,8 @@ class IndividualReports:
             with open(source_json) as source:
                 json_report = json.loads(source.read())
         except IOError as err:
-            print("Cannot open  json file. %s" % err, file=sys.stderr)
+            print('Cannot open aggregate json file: {}'.format(err),
+                  file=sys.stderr)
             raise err
 
         return IndividualReports(json_report,
@@ -236,6 +240,7 @@ class IndividualReports:
 def _load_template(env, template_dir, template_file, plugins, jinja_extns):
     if env is None:
         env = _set_up_jinja_env(template_dir, plugins, jinja_extns)
+
     try:
         return env.get_template(template_file)
     except jinja2.TemplateNotFound:
@@ -304,31 +309,28 @@ def arguments():
 
     # get options
     parser = argparse.ArgumentParser(
-        description=('Convert JSON file(s) (individual, aggregated or both) ' +
-                     'into human readable format'))
-    parser.add_argument('-i', '--individual', action="store_true",
-                        help=('Produce a single individual report. ' +
-                              help_all))
-    parser.add_argument('-a', '--aggregate', action="store_true",
-                        help=('Produce a single aggregated report. ' +
-                              help_all))
+        description=('Convert JSON file(s) (individual, aggregated or both) '
+                     'into human readable format using templates.'))
+    parser.add_argument('-i', '--individual', action='store_true',
+                        help='Produce a single individual report. {}'.format(help_all))
+    parser.add_argument('-a', '--aggregate', action='store_true',
+                        help='Produce a single aggregated report. {}'.format(help_all))
     parser.add_argument('-o', '--output',
                         help='Filepath for templated report output.',
                         default=DEFAULT_REPORT_NAME)
     parser.add_argument('--template_dir',
-                        help=('Directory that contains the templates.' +
-                              help_all),
+                        help='Directory that contains the templates. {}'.format(
+                            help_all),
                         default=DEFAULT_TEMPLATE_DIR)
     parser.add_argument('--template_individual',
-                        help=('Filepath for template file to use for ' +
-                              'templating individual reports.' + help_all),
+                        help=('Filepath for template file to use for templating individual '
+                              'reports. {}').format(help_all),
                         default=DEFAULT_INDIVIDUAL_TEMPLATE)
     parser.add_argument('--template_aggregate',
-                        help=('Filepath for template file to use for ' +
-                              'templating aggregate reports.' + help_all),
+                        help=('Filepath for template file to use for templating aggregate '
+                              'reports. {}').format(help_all),
                         default=DEFAULT_AGGREGATE_TEMPLATE)
-    parser.add_argument('--jinja_extensions',
-                        help=('Jinja extension. ' + help_all),
+    parser.add_argument('--jinja_extensions', help='Jinja extensions.',
                         default=DEFAULT_JINJA_EXTENSIONS)
     parser.add_argument('source_json',
                         help='Path to (aggregated or individual) JSON file.')
@@ -346,7 +348,7 @@ if __name__ == '__main__':
     ARGS = arguments()
     check_arguments(ARGS)
 
-    OUTPUT = '%s.%s' % (ARGS.output, ARGS.template_type)
+    OUTPUT = '{}.{}'.format(ARGS.output, ARGS.template_type)
 
     if ARGS.individual:
         individual_report(ARGS.source_json,

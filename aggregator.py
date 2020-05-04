@@ -2,7 +2,7 @@
 
 '''Report Aggregator.
 Author: Kenneth Ma (2015), under supervision of Dr. Anya Tafliovich
-Author: Anya Tafliovich 2015, 2016
+Author: Anya Tafliovich 2015, 2016, 2019
 
 Given individual JSON report files, create an aggregrated JSON report
 file. Inject student/group information into the individual JSON report
@@ -70,7 +70,7 @@ class TestReport:
         try:
             students = Students(student_file)
         except FileNotFoundError as err:
-            print('Cannot initialize students info. %s ' % err,
+            print('Cannot initialize students info: {} '.format(err),
                   file=sys.stderr)
             return
 
@@ -78,15 +78,14 @@ class TestReport:
         try:
             groups = Groups(group_file, students).by_repo_name()
         except FileNotFoundError as err:
-            print('Cannot initialize students info. %s ' % err,
+            print('Cannot initialize groups info: {} '.format(err),
                   file=sys.stderr)
             return
 
         try:
             submission_dirs = open(submission_dirs_file)
         except IOError as err:
-            print('Cannot open file that lists submission directories ' +
-                  'and directory names. %s' % err,
+            print('Cannot open file w/ submission directories and directory names: {}'.format(err),
                   file=sys.stderr)
             return
 
@@ -95,9 +94,8 @@ class TestReport:
             try:
                 [dirpath, repo_name] = line.strip().split(',')
             except ValueError as err:
-                print(('The file %s that lists submission directories ' +
-                       'and directory names is incorrectly formatted. %s') %
-                      (submission_dirs_file, err),
+                print(('The file {} with submission directories and directory names '
+                       'is incorrectly formatted: {}').format(submission_dirs_file, err),
                       file=sys.stderr)
                 return
 
@@ -105,25 +103,22 @@ class TestReport:
                 with open(os.path.join(dirpath, json_file)) as json_path:
                     test_result = json.loads(json_path.read())
             except IOError as error:
-                print('Warning: no JSON result file for %s: %s' %
-                      (dirpath, error),
+                print('Warning: no JSON result file for {}: {}'.format(dirpath, error),
                       file=sys.stderr)
-
                 continue
             except ValueError as error:
-                print('Warning: could not load JSON from %s. %s' %
-                      (dirpath, error),
+                print('Warning: could not load JSON from {}: {}'.format(dirpath, error),
                       file=sys.stderr)
                 continue
 
             group = groups.get(repo_name)
             if group is None:
-                print('Warning: no record of group %s.' % repo_name,
+                print('WARNING: no record of group {}.'.format(repo_name),
                       file=sys.stderr)
                 continue
 
-            test_result['students'] = [student.to_json() for student in
-                                       group.students]
+            test_result['students'] = [student.to_json()
+                                       for student in group.students]
 
             # update report time
             test_result['date'] = self.date
@@ -172,8 +167,7 @@ class TestReport:
 
     @staticmethod
     def from_json(json_str):
-        ''' (str) -> TestReport
-        Instatiates a new TestReport from a json string.
+        ''' Create a TestReport from JSON str.
         '''
 
         return TestReport(None, None, None, None,
@@ -184,24 +178,19 @@ if __name__ == '__main__':
 
     # get options
     PARSER = argparse.ArgumentParser(
-        description=('Produces an aggregated json report file from the ' +
+        description=('Produces an aggregated json report file from the '
                      'individual json report files.'))
     PARSER.add_argument('assignment',
                         help='Name of the assignment')
     PARSER.add_argument('submission_dirs_and_names',
-                        help=('Path to a file that contains submission ' +
-                              'information. This file must be in the format:' +
+                        help=('Path to a file with submission information in format:'
                               '\n\tsubmission_path,submission_name'))
     PARSER.add_argument('students_file',
-                        help=('Path to a classlist file. This file must be ' +
-                              'in the following format:\n\t' +
-                              'student_id,firstnames,lastname,' +
-                              'student_number,email'))
+                        help=('Path to a classlist file in format:\n\t'
+                              'student_id,firstnames,lastname,student_number,email'))
     PARSER.add_argument('groups_file',
-                        help=('Path to a file with groups information. This ' +
-                              'file must be in the following format:\n\t' +
-                              'group_name,group_dir_name,student_id_1,' +
-                              'student_id_2,...'))
+                        help=('Path to a file with groups information in format:\n\t'
+                              'group_name,group_dir_name,student_id_1,student_id_2,...'))
     PARSER.add_argument('source_files_name', nargs='?',
                         help='Name of the source JSON input files',
                         default=DEFAULT_IN_JSON_FILE)

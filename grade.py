@@ -7,7 +7,7 @@ dirpath,repo_name
 TODO: perhaps add an option to specify group names instead of repo
 names?
 
-Anya Tafliovich June 2015, 2016
+Anya Tafliovich 2015, 2016, 2019
 
 '''
 
@@ -16,21 +16,19 @@ import test_runner
 
 
 def read_repodirs(repo_dirs_file):
-    '''Read the file in the format
-    dirpath,repo_name
-    and return a repo_name->dirpath dict.
+    '''Return a Dict[repo_name, dirpath] collected from info in repo_dirs_file.
+
+    repo_dirs_file is a path to a file in format:
+        dirpath,repo_name
+
     '''
 
-    repodirs = {}
     with open(repo_dirs_file) as rdf:
-        for line in rdf:
-            dirpath, repo_name = line.strip().split(',')
-            repodirs[repo_name] = dirpath
-    return repodirs
+        return dict((repo_name, dirpath) for [dirpath, repo_name] in
+                    line.strip().split(',') for line in rdf)
 
 
 if __name__ == '__main__':
-    # Arguments #
     PARSER = argparse.ArgumentParser(
         description='Executes unit tests on student code in given repos.')
 
