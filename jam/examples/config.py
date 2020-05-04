@@ -10,7 +10,9 @@ max_processes = 5
 # Make sure this is >> than the individual test timeouts
 #   (see pam.py and utils/defaults.py).
 timeout = 100
-timeout_operation = lambda: open('timedout', 'w').close()
+
+
+def timeout_operation(): return open('timedout', 'w').close()
 
 
 # ---- STUDENT PROCESSING ---- #
@@ -22,7 +24,7 @@ timeout_operation = lambda: open('timedout', 'w').close()
 students_fname = os.path.join('jam', 'examples', 'directories.txt')
 
 # absolute path to uam
-uam_dir = 'YOUR_PATH_TO_UAM'
+uam_dir = '/home/anya/at'  # 'YOUR_PATH_TO_UAM'
 
 # path to jam
 jam_dir = os.path.join(uam_dir, 'jam')
@@ -33,7 +35,7 @@ test_dir = os.path.join(jam_dir, 'examples', 'tests')
 # JAM libraries portion of the Java path
 jam_libs = (':'.join(os.path.join(jam_dir, 'lib', lib)
                      for lib in ('jam.jar', 'junit-4.12.jar',
-                                 'hamcrest-core-1.3.jar', 'gson-2.3.1.jar')))
+                                 'hamcrest-core-1.3.jar', 'gson-2.8.5.jar')))
 
 # Shell command to be performed before executing tests in a directory or None.
 # -- This command will be invoked from within the student's directory!

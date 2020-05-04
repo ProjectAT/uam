@@ -53,7 +53,7 @@ The directory jam/examples/tests contains a sample test suit for A1.
 
 4) Compile your JAM test files:
 
-./compile_tests.sh /home/anya/at/uam/jam/examples/tests/a1tester/ /home/anya/at/uam/jam/examples/solution/A1/
+./compile_tests.sh /home/anya/at/jam/examples/tests/a1tester/ /home/anya/at/jam/examples/solution/A1/
 
 Notice the use of absolute paths here. See script compile_tests.sh for
 more information.
