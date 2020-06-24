@@ -8,10 +8,11 @@ students named *correct*, *errors*, *failures*, *infloop*,
 *outofstack*, *pep8fail*, and *syntax* (see directory
 [examples/submissions](./examples/submissions)). Each submission in
 our example is in a folder named *A1*.  Therefore, you need the file
-(see [directories.txt](./examples/submissions/directories.txt)) with
+(see [directories.txt](./examples/directories.txt)) with
 the following contents:
 
-`pam/examples/submissions/correct/A1
+`
+pam/examples/submissions/correct/A1
 pam/examples/submissions/errors/A1
 pam/examples/submissions/failures/A1
 pam/examples/submissions/infloop/A1
@@ -21,7 +22,7 @@ pam/examples/submissions/syntax/A1`
 
 Notice that all paths are relative to the location of [test_runner.py](../test_runner.py).
 
-1. Test file(s).
+2. Test file(s).
 
 You need unittest test file(s) that will be used to test the student
 submissions.
@@ -34,12 +35,12 @@ unittest files: see [test_asst.py](./examples/test_asst.py) and/or
 [test_2_asst.py](./examples/test_asst.py).
 
 
-1. Configure test_runner.py.
+3. Configure test_runner.py.
 
 You need a configuration file. See [examples/config.py](./examples/config.py).
 
 
-1. Finally,
+4. Finally,
 
 `python3 test_runner.py path/to/configfile`
 
@@ -60,7 +61,7 @@ the following format:
 TIP: if you are at UofT, you can get this list from
 Quercus/Intranet/your-dept-sysadmin.
 
-1. Group information.
+2. Group information.
 
 If your students were working in groups and submitted one solution per
 group, then you need a file that records this information. It should
@@ -76,13 +77,13 @@ have a group per student.
 TIP: If you are using MarkUs, you can download this file from your
 MarkUs web interface.
 
-1. Name matching.
+3. Name matching.
 
 You need a file that matches submission directories with group
 names. See [dirs_and_names.txt](./examples/dirs_and_names.txt) for an
 example.
 
-1. Finally,
+4. Finally,
 
 `python3 aggregator.py A1 pam/examples/dirs_and_names.txt pam/examples/students.csv pam/examples/groups.txt`
 
@@ -99,7 +100,7 @@ full results of running all tests on all student submissions.
 JSONs are great, but we want good looking summaries.
 
 1. In the configuration file, specify where your templates are. See
-sample [config.py] (./examples/config.py).
+sample [config.py](./examples/config.py).
 
 The templates we currently provide are: HTML (aggregate), txt (both
 individual and aggregate), markus that contains a csv grades table
@@ -107,10 +108,12 @@ individual and aggregate), markus that contains a csv grades table
 
 You are welcome to contribute your own templates!
 
-1. Some examples:
+2. Some examples:
 
 `python3 templator.py aggregated.json html`
+
 `python3 templator.py aggregated.json txt`
+
 `python3 templator.py aggregated.json markus`
 
 See 
