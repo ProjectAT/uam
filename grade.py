@@ -1,7 +1,7 @@
 '''A wrapper around test_runner that runs the tester on individual
 submissions given on the command line.
 
-Needs a file tht maps directories to repo_names, in the format
+Also takes a file that maps directories to repo_names, in the format:
 dirpath,repo_name
 
 TODO: perhaps add an option to specify group names instead of repo
@@ -20,17 +20,15 @@ def read_repodirs(repo_dirs_file):
 
     repo_dirs_file is a path to a file in format:
         dirpath,repo_name
-
     '''
 
-    with open(repo_dirs_file) as rdf:
-        return dict((repo_name, dirpath) for [dirpath, repo_name] in
-                    line.strip().split(',') for line in rdf)
+    return dict((repo_name, dirpath) for [dirpath, repo_name] in
+                line.strip().split(',') for line in repo_dirs_file)
 
 
 if __name__ == '__main__':
     PARSER = argparse.ArgumentParser(
-        description='Executes unit tests on student code in given repos.')
+        description='Run tests on selected repos.')
 
     PARSER.add_argument('directories_and_names',
                         help='File in format dirpath,repo_name.')
@@ -41,7 +39,8 @@ if __name__ == '__main__':
     ARGS = PARSER.parse_args()
 
     # read the dirpath,repo_name file
-    REPODIRS = read_repodirs(ARGS.directories_and_names)
+    with open(ARGS.directories_and_names) as rdf:
+        REPODIRS = read_repodirs(rdf)
 
     # run tester on all given repos
     for repo in ARGS.repo_name:
