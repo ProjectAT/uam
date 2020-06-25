@@ -1,6 +1,6 @@
-jam/examples/submissions/correct/E2,correct
-jam/examples/submissions/failures/E2,failures
-jam/examples/submissions/infloop/E2,infloop
-jam/examples/submissions/nosubmission/E2,nosubmission
-jam/examples/submissions/nullpointer/E2,nullpointer
-jam/examples/submissions/syntax/E2,syntax
+jam/examples/submissions/correct/A1,correct
+jam/examples/submissions/failures/A1,failures
+jam/examples/submissions/infloop/A1,infloop
+jam/examples/submissions/nosubmission/A1,nosubmission
+jam/examples/submissions/nullpointer/A1,nullpointer
+jam/examples/submissions/syntax/A1,syntax

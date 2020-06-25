@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 
-'''Report Aggregator -- a part of the UAM project at UofT
+'''Report Aggregator.
 Author: Kenneth Ma (2015), under supervision of Dr. Anya Tafliovich
 Modified by A.Tafliovich 2016, 2020.
+
+Given individual JSON report files, create an aggregrated JSON report
+file. Inject student/group information into the individual JSON report
+files.
 
 '''
 
@@ -81,8 +85,7 @@ class TestReport:
         try:
             submission_dirs = open(submission_dirs_file)
         except IOError as err:
-            print('Cannot open file that lists submission directories ' +
-                  'and directory names. {}'.format(err),
+            print('Cannot open file w/ submission directories and directory names: {}'.format(err),
                   file=sys.stderr)
             return
 
@@ -165,8 +168,7 @@ class TestReport:
 
     @staticmethod
     def from_json(json_str):
-        ''' (str) -> TestReport
-        Instatiates a new TestReport from a json string.
+        ''' Create a TestReport from JSON str.
         '''
 
         return TestReport(None, None, None, None,
@@ -177,24 +179,19 @@ if __name__ == '__main__':
 
     # get options
     PARSER = argparse.ArgumentParser(
-        description=('Produces an aggregated json report file from the ' +
+        description=('Produces an aggregated json report file from the '
                      'individual json report files.'))
     PARSER.add_argument('assignment',
                         help='Name of the assignment')
     PARSER.add_argument('submission_dirs_and_names',
-                        help=('Path to a file that contains submission ' +
-                              'information. This file must be in the format:' +
+                        help=('Path to a file with submission information in format:'
                               '\n\tsubmission_path,submission_name'))
     PARSER.add_argument('students_file',
-                        help=('Path to a classlist file. This file must be ' +
-                              'in the following format:\n\t' +
-                              'student_id,firstnames,lastname,' +
-                              'student_number,email'))
+                        help=('Path to a classlist file in format:\n\t'
+                              'student_id,firstnames,lastname,student_number,email'))
     PARSER.add_argument('groups_file',
-                        help=('Path to a file with groups information. This ' +
-                              'file must be in the following format:\n\t' +
-                              'group_name,group_dir_name,student_id_1,' +
-                              'student_id_2,...'))
+                        help=('Path to a file with groups information in format:\n\t'
+                              'group_name,group_dir_name,student_id_1,student_id_2,...'))
     PARSER.add_argument('source_files_name', nargs='?',
                         help='Name of the source JSON input files',
                         default=DEFAULT_IN_JSON_FILE)

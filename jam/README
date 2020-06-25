@@ -1,54 +1,148 @@
-All of the following assumes we are working at the top UAM directory.
+0. Compile JAM.
 
-Let's say we would like to grade the assignment E2.
+ Make sure compile_jam.sh is executable.
+ ./compile_jam.sh
 
-1) We need a directory named "submissions" in the uam directory, with the following structure:
-submissions/group_name/E2/...files...
+ You only need to do this once.
 
-TIPS:
-- I usually create a symlink to wherever I want to have all my submissions, e.g. run:
-  ln -s jam/examples/submissions/ submissions
-- You can get a script to check out all submissions from MarkUs.
 
-2) We need the following lists:
+I. GRADE.
 
-2a) A classlist in the csv format:
-UTORID,first,last,student-number,email
-(let's call this list students.csv, for the purposes of our example)
+1) Student submissions.
 
-TIPS:
-- You can get this list from Blackboard.
+You need a file that lists all directories containing student
+submissions.  The directory named "examples" contains six "student"
+submissions, from students "correct", "failures", "infloop",
+"nosubmissions", "nullpointer", and "syntax" (see directory
+jam/examples/submissions). Each submission is in a folder named A1.
+Therefore, you need the file (see directories.txt) with the following
+contents:
 
-2b) A list of directory paths to individual submissions.
-(let's call this list directories.txt, for the purposes of our example)
+jam/examples/submissions/correct/A1
+jam/examples/submissions/failures/A1
+jam/examples/submissions/infloop/A1
+jam/examples/submissions/nosubmission/A1
+jam/examples/submissions/nullpointer/A1
+jam/examples/submissions/syntax/A1
 
-2c) A list of directory paths, together with repo names.
-(let's call this list dirs_and_names.txt, for the purposes of our example)
+Note that all paths are relative to the location of test_runner.py.
 
-2d) A list of student groups in the format:
-group_name,group_repo,user_name1,user_name2,...
-(let's call this list groups.txt, for the purposes of our example)
+2) Your solution (or solution stubs) to compile your tests.
 
-TIPS:
-- You can get this list from MarkUs.
+The directory jam/examples/solution contains a sample solution.
 
-3) Compile JAM and the tests (if first time, or after changes, or just in case :) ):
-cd jam/
-./compile_jam.sh
-./compile_tests.sh /path_to_uam/jam/examples/unittests/E2/e2tester/ /path-to-uam/jam/examples/solution/E2/
+3) Your test file(s).
 
-4) Copy the file jam/examples/config.py to the top level directory and edit it.
+You need your JAM test files for testing each individual submission.
+You also may need additional files to run your tests (for example,
+starter files you distributed to students and instructed them to not
+modify them).
 
-5) Run:
-cd ../
+REQUIREMENTS for the test files:
+
+Starting with your "normal" JUnit4 test file, you create a JAM test
+file as follows:
+
+a) import edu.toronto.cs.jam.annotations.Description;
+
+b) For each @Test method, use the following annotations:
+   @Test(timeout=XXX)
+   @Description(description="description of your test method")
+
+The directory jam/examples/tests contains a sample test suit for A1.
+
+4) Compile your JAM test files:
+
+./compile_tests.sh /home/anya/at/jam/examples/tests/a1tester/ /home/anya/at/jam/examples/solution/A1/
+
+Notice the use of absolute paths here. See script compile_tests.sh for
+more information.
+
+5) Configure test_runner.py.
+
+See jam/examples/config.py.
+
+You need to put config.py (or a link to config.py) in the same
+directory as test_runner.py.
+
+6) Finally,
+
 python3 test_runner.py
 
-6) Aggregate results:
-python3 aggregator.py E2 jam/examples/dirs_and_names.txt jam/examples/students.csv jam/examples/groups.txt result.json aggregated.json
+If everything went well, you should have a .json file in each student
+submission directory.
 
-7) Format results with one of:
-python3 templator.py aggregated.json txt
+
+===> This section is identical to the corresponding section in pam/README <===
+
+II. AGGREGATE.
+
+
+1) Student information.
+
+You need a classlist (see students.csv) in the following format:
+
+student-id,first-name,last-name,student-number,email
+
+TIP: if you are at UofT, you can get this list from Blackboard.
+
+2) Group information.
+
+If your students were working in groups and submitted one solution per
+group, then you need a file that records this information. It should
+be in the format (see groups.txt):
+
+group-name,dir-name,student-id-1,student-id-2,...
+
+Actually, even if your students were working individually, you still
+need this file. In other words, we assume that students ALWAYS work in
+groups. When they work individually, the group size is 1, and you have
+a group per student.
+
+TIP: If you are using MarkUs, you can download this file from your
+MarkUs web interface.
+
+3) Name matching.
+
+You need a file that matches submission directories with group
+names. See dirs_and_names.txt for an example.
+
+4) Finally,
+
+python3 aggregator.py A1 jam/examples/dirs_and_names.txt jam/examples/students.csv jam/examples/groups.txt
+
+See
+  python3 aggregator.py --help
+for more options and full documentation.
+
+If all went well, you should have a file aggregated.json that contains
+full results of running all tests on all student submissions.
+
+
+III.  FORMAT.
+
+JSONs are great, but we want good looking summaries.
+
+1) In the config.py file, specify where your templates are. See sample config.py.
+
+The templates we currectly provide are: HTML (aggregate), txt (both
+individual and aggregate), markus that contains a csv grades table
+(aggregate), and a .gf file (aggregate).
+
+You are welcome to contribute your own templates, or to request us to
+produce some!
+
+2) Some examples:
+
 python3 templator.py aggregated.json html
-python3 templator.py aggregated.json gf
+python3 templator.py aggregated.json txt
 python3 templator.py aggregated.json markus
 
+See 
+  python3 templator.py --help
+for full information and more option.
+
+
+SUPPORT:
+
+Please send comments, feedback and bugs to anya@cs.utoronto.ca.

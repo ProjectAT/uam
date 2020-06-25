@@ -71,8 +71,7 @@ def exclude(collection, exclusions):
     Removes any elements that contain exclusions from collection.
     '''
 
-    return [element for element in collection
-            if not _is_excluded(element, exclusions)]
+    return [element for element in collection if all(exclusion not in element for exclusion in exclusions)]
 
 
 def _is_excluded(word, exclusions):

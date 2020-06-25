@@ -76,22 +76,16 @@ public class JSonOutputListener extends RunListener {
 	super.testStarted(desc);
 
 	String className = desc.getClassName();
-	String methodName = desc.getMethodName();
-	String description = "";
 	boolean passed = true;
 
-	if (methodName.equals("initializationError")) { // TODO: is there a better way?
-	    // Submission does not compile, so we cannot even figure out all
-	    // test methods. Mark the class as failed (one "method" recorded).
-	    description = ExceptionExplainer.COMPILE_ERROR_MSG;
+	if (isCompilationError(desc)) {
 	    passed = false;
-	} else { 
-	    description = desc.getAnnotation(Description.class).description();
-	    passed = true;
 	}
 
+	String description = description(desc);
+	
 	// make the key in the Map a fully qualified method name
-	methodName = qualifiedName(desc);
+	String methodName = qualifiedName(desc);
 
 	TestInfo thisInfo = new TestInfo(methodName, 
 					 description, 
@@ -211,10 +205,10 @@ public class JSonOutputListener extends RunListener {
 		    JsonObject failJson = new JsonObject();
 		    failJson.addProperty(JsonConstants.DESCRIPTION,
 					 testMethodInfo.description);
-		    failJson.addProperty(JsonConstants.MESSAGE, 
-					 ExceptionExplainer.failureMessage(failure));
+		    failJson.addProperty(JsonConstants.MESSAGE,
+					 isCompilationError(failure) ? "" : ExceptionExplainer.failureMessage(failure));
 		    failJson.addProperty(JsonConstants.DETAILS, 
-					 failure.getTrace());
+					 isCompilationError(failure) ? "" : failure.getTrace());
 		    failures.add(methodName, failJson);
 		}
 	    }
@@ -235,6 +229,24 @@ public class JSonOutputListener extends RunListener {
         return desc.getClassName() + ":" + desc.getMethodName();
     }
 
+    private String description(final org.junit.runner.Description desc) {
+
+    	if (isCompilationError(desc)) { 
+	    return ExceptionExplainer.COMPILE_ERROR_MSG;
+	}
+	return desc.getAnnotation(Description.class).description();
+    }
+
+    private boolean isCompilationError(final org.junit.runner.Description desc) {
+	// TODO: is there a better way?
+	return desc.getMethodName().equals("initializationError");
+    }
+
+    private boolean isCompilationError(final Failure failure) {
+	return isCompilationError(failure.getDescription());
+    }
+
+    
     /**
      * Info about a Test Method.
      */

@@ -1,4 +1,4 @@
-correct,correct,correct
+correct,correct,correct,freeloader
 errors,errors,errors
 failures,failures,failures
 infloop,infloop,infloop

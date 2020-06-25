@@ -1,15 +1,11 @@
-#!/usr/bin/env python3
-
-'''Python Auto Marker -- a part of the UAM project at UofT
+'''Python Auto Marker.
 Author: Kenneth Ma (2015), under supervision of Dr. Anya Tafliovich
-Author: Anya Tafliovich 2015, 2016
+Author: Anya Tafliovich 2015, 2016, 2020
 
 Grade an individual student submission in the current working
 directory with given files containing unittest.TestCases and produce a
-UAM compatible JSON string, suitable for templating and later
-aggregation stages.
-
-TODO: change all names to pothole.
+UAM compatible JSON string, suitable for templating and aggregation
+stages.
 
 '''
 
@@ -37,8 +33,7 @@ def _default_formatter(exc):
 
 class TestResult:
     '''A result containing information (passes, failures, and errors) of
-    the all tests found in the current directory run at instantiation.
-
+    the all test runs.
     '''
 
     def __init__(self, test_files=None, timeout=DEFAULT_TIMEOUT,
@@ -46,7 +41,7 @@ class TestResult:
                  formatter=_default_formatter):
         '''TODO: Document me.'''
 
-        print('Grading %s..' % os.getcwd())
+        print('Grading {}..'.format(os.getcwd()))
 
         self._timeout = timeout
         self._test_suite, self._result, self._buffer = \
@@ -63,7 +58,7 @@ class TestResult:
                 try:
                     self.results = json.loads(from_json)
                 except ValueError as error:
-                    print('Could not load a JSON result file. %s' % error,
+                    print('Could not load a JSON result file. {}'.format(error),
                           file=sys.stderr)
             return
 
@@ -99,7 +94,7 @@ class TestResult:
         try:
             return json.dumps(self.results, indent=2)
         except TypeError as err:
-            print('Cannot generate a JSON string from test results. %s' % err,
+            print('Cannot generate a JSON string from test results. {}'.format(err),
                   file=sys.stderr)
             return '{}'
 
@@ -256,7 +251,7 @@ class Timeout:
 def _fully_qualified_name(obj):
     '''There must be a better way. TODO: find it.'''
 
-    return type(obj).__module__ + '.' + type(obj).__name__
+    return '{}.{}'.format(type(obj).__module__, type(obj).__name__)
 
 
 if __name__ == '__main__':
@@ -289,7 +284,7 @@ if __name__ == '__main__':
     # write json out
     try:
         with open(ARGS.target, 'w') as tgt:
-            tgt.write('%s\n' % RESULT.to_json())
+            tgt.write('{}\n'.format(RESULT.to_json()))
     except IOError as error:
-        print('Could not write JSON result to file. %s' % error,
+        print('Could not write JSON result to file. {}'.format(error),
               file=sys.stderr)
