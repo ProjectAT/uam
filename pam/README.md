@@ -118,7 +118,7 @@ You are welcome to contribute your own templates!
 
 See 
   `python3 templator.py --help`
-for full information and more option.
+for full information and more options.
 
 
 ## Support
