@@ -97,7 +97,7 @@ class TestResult:
         '''
 
         try:
-            return json.dumps(self.results)
+            return json.dumps(self.results, indent=2)
         except TypeError as err:
             print('Cannot generate a JSON string from test results. %s' % err,
                   file=sys.stderr)
