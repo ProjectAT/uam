@@ -2,7 +2,7 @@
 
 '''Report Aggregator -- a part of the UAM project at UofT
 Author: Kenneth Ma (2015), under supervision of Dr. Anya Tafliovich
-Modified by A.Tafliovich 2016.
+Modified by A.Tafliovich 2016, 2020.
 
 '''
 
@@ -37,7 +37,7 @@ class TestReport:
         students_file: classlist file in the format
           student_id,first_names,last_name,student_number,email
 
-       groups_file: file with student groups, in the format
+        groups_file: file with student groups, in the format
           group_name,dir_name,student_id_1,student_id_2,...
         Again, if you're using MarkUs, dir_name is the group's repo name.
 
@@ -55,7 +55,7 @@ class TestReport:
             self._from_aggregated_dict(aggregated_dict)
             return
 
-        # aggregate
+        # set up aggregation
         self.results, self.name, self.date, self.tests = (
             [],
             assignment_name,
@@ -66,7 +66,7 @@ class TestReport:
         try:
             students = Students(student_file)
         except FileNotFoundError as err:
-            print('Cannot initialize students info. %s ' % err,
+            print('Cannot initialize students info. {}'.format(err),
                   file=sys.stderr)
             return
 
@@ -74,7 +74,7 @@ class TestReport:
         try:
             groups = Groups(group_file, students).by_repo_name()
         except FileNotFoundError as err:
-            print('Cannot initialize students info. %s ' % err,
+            print('Cannot initialize students info. {}'.format(err),
                   file=sys.stderr)
             return
 
@@ -82,68 +82,66 @@ class TestReport:
             submission_dirs = open(submission_dirs_file)
         except IOError as err:
             print('Cannot open file that lists submission directories ' +
-                  'and directory names. %s' % err,
+                  'and directory names. {}'.format(err),
                   file=sys.stderr)
             return
 
         # go
         for line in submission_dirs:
-            try:
-                [dirpath, repo_name] = line.strip().split(',')
-            except ValueError as err:
-                print(('The file %s that lists submission directories ' +
-                       'and directory names is incorrectly formatted. %s') %
-                      (submission_dirs_file, err),
-                      file=sys.stderr)
+            if not self._process_submission(line, groups, submission_dirs_file, json_file):
                 return
 
-            try:
-                with open(os.path.join(dirpath, json_file)) as json_path:
-                    test_result = json.loads(json_path.read())
-            except IOError as error:
-                print('Warning: no JSON result file for %s: %s' %
-                      (dirpath, error),
-                      file=sys.stderr)
+    def _process_submission(self, line, groups, submission_dirs_file, json_file):
+        '''Process one test result (one submission) during aggregation.'''
 
-                continue
-            except ValueError as error:
-                print('Warning: could not load JSON from %s. %s' %
-                      (dirpath, error),
-                      file=sys.stderr)
-                continue
+        try:
+            [dirpath, repo_name] = line.strip().split(',')
+        except ValueError as err:
+            print(('The file {} that lists submission directories ' +
+                   'and directory names is incorrectly formatted. {}').format(
+                       submission_dirs_file, err),
+                  file=sys.stderr)
+            return False  # abort aggregation
 
-            group = groups.get(repo_name)
-            if group is None:
-                print('Warning: no record of group %s.' % repo_name,
-                      file=sys.stderr)
-                continue
+        try:
+            with open(os.path.join(dirpath, json_file)) as json_path:
+                test_result = json.loads(json_path.read())
+        except IOError as error:
+            print('Warning: no JSON result file for {}: {}'.format(dirpath, error),
+                  file=sys.stderr)
+            return True  # skip this one and continue
+        except ValueError as error:
+            print('Warning: could not load JSON from {}: {}'.format(dirpath, error),
+                  file=sys.stderr)
+            return True  # skip this one and continue
 
-            test_result['students'] = [student.to_json() for student in
-                                       group.students]
+        group = groups.get(repo_name)
+        if group is None:
+            print('Warning: no record of group {}.'.format(repo_name),
+                  file=sys.stderr)
+            return True  # skip this one and continue
 
-            # update report time
-            test_result['date'] = self.date
+        test_result['students'] = [student.to_json() for student in
+                                   group.students]
 
-            # update assignment name
-            test_result['assignment'] = assignment_name
+        # update report time
+        test_result['date'] = self.date
 
-            # inject origin path (for templating stage)
-            test_result['origin'] = os.path.join(os.getcwd(), dirpath)
+        # update assignment name
+        test_result['assignment'] = self.name
 
-            # aggegration
-            self.results.append(test_result)
+        # inject origin path (for templating stage)
+        test_result['origin'] = os.path.join(os.getcwd(), dirpath)
 
-            # TODO: I don't think we need this anymore. Anya.
-            # cycle through tests to keep track of test names performed
-            for test_case_result in test_result['results'].values():
-                self.tests = (self.tests |
-                              set(test_case_result.get('passes', {}).keys()) |
-                              set(test_case_result.get('failures', {}).keys()) |
-                              set(test_case_result.get('errors', {}).keys()))
+        # aggegration
+        self.results.append(test_result)
 
-            # write injected result back out into source json file
-            with open(os.path.join(dirpath, json_file), 'w') as filep:
-                filep.write(json.dumps(test_result) if test_result else '{}')
+        # write injected result back out into source json file
+        with open(os.path.join(dirpath, json_file), 'w') as filep:
+            filep.write(json.dumps(test_result, indent=2)
+                        if test_result else '{}')
+
+        return True
 
     def _from_aggregated_dict(self, aggregated_dict):
         self.results, self.name, self.date, self.tests = (
@@ -153,16 +151,16 @@ class TestReport:
             aggregated_dict['tests'])
 
     def to_json(self):
-        '''Return a standardized UAM compatible JSON string used for producing
-        HTML, text, and gf (or whatever template is available)
-        reports.
+        '''Return a standardized UAM compatible JSON used for producing HTML,
+        text, and gf (or whatever template is available) reports.
 
         '''
 
         # TODO: the else part may lead to bugs
         return (json.dumps({'results': self.results,
                             'name': self.name, 'date': self.date,
-                            'tests': sorted(self.tests)})
+                            'tests': sorted(self.tests)},
+                           indent=2)
                 if self.results else '{}')
 
     @staticmethod
@@ -214,4 +212,4 @@ if __name__ == '__main__':
         str(ARGS.source_files_name)
     ).to_json()
     with open(str(ARGS.output_file_name), 'w') as report:
-        report.write('%s\n' % TEST_REPORT)
+        report.write('{}\n'.format(TEST_REPORT))
