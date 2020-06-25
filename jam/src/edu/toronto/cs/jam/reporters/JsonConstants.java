@@ -13,6 +13,7 @@ public class JsonConstants {
     public final static String ASSIGNMENT = "assignment";
     public final static String STUDENTS = "students";
     public final static String RESULTS = "results";
+    public final static String TESTS = "tests";
 
     /**
      * Return a fake student Json.

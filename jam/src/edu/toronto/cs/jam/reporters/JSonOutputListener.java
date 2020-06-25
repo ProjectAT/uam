@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
@@ -148,6 +150,12 @@ public class JSonOutputListener extends RunListener {
         wrapper.addProperty(JsonConstants.DATE, "");
         wrapper.addProperty(JsonConstants.ASSIGNMENT, "");
 
+	Set<String> testSet = new HashSet<>();
+	testInfo.values().forEach((map) -> testSet.addAll(map.keySet()));
+	JsonArray tests = new Gson().toJsonTree(new ArrayList(testSet)).getAsJsonArray();
+	
+	wrapper.add(JsonConstants.TESTS, tests);
+	
         // Output the serialized wrapper JsonObject
         output.print(gson.toJson(wrapper));
     }
