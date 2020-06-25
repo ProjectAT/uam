@@ -138,6 +138,7 @@ class TestReport:
 
         # aggegration
         self.results.append(test_result)
+        self.tests.update(test_result['tests'])
 
         # write injected result back out into source json file
         with open(os.path.join(dirpath, json_file), 'w') as filep:
