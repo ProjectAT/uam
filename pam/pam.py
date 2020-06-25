@@ -47,7 +47,7 @@ class TestResult:
         self._test_suite, self._result, self._buffer = \
             None, None, io.StringIO()
 
-        # if no tests files specified: try to load results from JSON,
+        # if no test files specified: try to load results from JSON,
         # complain and return if load unsuccessful.
         if test_files is None:
             if from_json is None:
@@ -73,10 +73,12 @@ class TestResult:
         ).run(self._test_suite)
 
         # make result dict for JSON
+        results, all_tests = self._format_results(formatter)
         self.results = {'students': [],
-                        'results': self._format_results(formatter),
+                        'results': results,
                         'date': 'N/A',
-                        'assignment': 'N/A'}
+                        'assignment': 'N/A',
+                        'tests': sorted(all_tests)}
 
     def get_results(self):
         ''' (TestResult) -> dict
@@ -127,7 +129,8 @@ class TestResult:
             test.run = Timeout(test.run, self._timeout)
 
     def _format_results(self, formatter=_default_formatter):
-        '''(TestResult) -> dict{str: dict{str: list of str or dict{str: str}}}
+        '''(TestResult) -> dict{str: dict{str: list of str or dict{str: str}}},
+                           List[all-tests]
 
         Order passes, failures, and errors by their parent TestCase
         name.  Uses TestCase's fully qualified name instead of the
@@ -136,12 +139,14 @@ class TestResult:
         '''
 
         results = {}
+        all_tests = set()
 
         # passes
         for success in self._result.pam_successes():
             results.setdefault(_fully_qualified_name(success), {}).setdefault(
                 'passes', {}).update({success.id():
                                       success.shortDescription() or ''})
+            all_tests.add(success.id())
 
         # failures
         for fail in self._result.pam_failures():
@@ -150,6 +155,7 @@ class TestResult:
                     'description': formatter(fail)['description'],
                     'message': formatter(fail)['message'],
                     'details': formatter(fail)['details']}})
+            all_tests.add(fail[0].id())
 
         # errors
         for err in self._result.pam_errors():
@@ -158,8 +164,9 @@ class TestResult:
                     'description': formatter(err)['description'],
                     'message': formatter(err)['message'],
                     'details': formatter(err)['details']}})
+            all_tests.add(err[0].id())
 
-        return results
+        return (results, all_tests)
 
 
 class PAMTestResult(unittest.TextTestResult):
