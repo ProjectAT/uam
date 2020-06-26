@@ -1,7 +1,8 @@
 ## Compile JAM
 
  Make sure [compile_jam.sh](./compile_jam.sh) is executable. Then:
- `./compile_jam.sh`
+
+`./compile_jam.sh`
 
  You only need to do this once.
 
@@ -19,14 +20,13 @@ a folder named A1.  Therefore, you need the file (see
 [directories.txt](./examples/directories.txt)) with the following
 contents:
 
-`
-jam/examples/submissions/correct/A1
-jam/examples/submissions/failures/A1
-jam/examples/submissions/infloop/A1
-jam/examples/submissions/nosubmission/A1
-jam/examples/submissions/nullpointer/A1
-jam/examples/submissions/syntax/A1
-`
+`jam/examples/submissions/correct/A1`
+`jam/examples/submissions/failures/A1`
+`jam/examples/submissions/infloop/A1`
+`jam/examples/submissions/nosubmission/A1`
+`jam/examples/submissions/nullpointer/A1`
+`jam/examples/submissions/syntax/A1`
+
 
 Note that all paths are relative to the location of
 [test_runner.py](../test_runner.py).
@@ -47,10 +47,10 @@ file as follows:
 a. `import edu.toronto.cs.jam.annotations.Description;`
 
 b. For each @Test method, use the following annotations:
-`
-@Test(timeout=XXX)
-@Description(description="description of your test method")
-`
+
+`@Test(timeout=XXX)`
+`@Description(description="description of your test method")`
+
 
 The directory [examples/tests](./examples/tests) contains a sample
 test suit for A1.

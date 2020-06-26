@@ -11,14 +11,13 @@ our example is in a folder named *A1*.  Therefore, you need the file
 (see [directories.txt](./examples/directories.txt)) with
 the following contents:
 
-`
-pam/examples/submissions/correct/A1
-pam/examples/submissions/errors/A1
-pam/examples/submissions/failures/A1
-pam/examples/submissions/infloop/A1
-pam/examples/submissions/outofstack/A1
-pam/examples/submissions/pep8fail/A1
-pam/examples/submissions/syntax/A1`
+`pam/examples/submissions/correct/A1`
+`pam/examples/submissions/errors/A1`
+`pam/examples/submissions/failures/A1`
+`pam/examples/submissions/infloop/A1`
+`pam/examples/submissions/outofstack/A1`
+`pam/examples/submissions/pep8fail/A1`
+`pam/examples/submissions/syntax/A1`
 
 Notice that all paths are relative to the location of [test_runner.py](../test_runner.py).
 
@@ -32,7 +31,7 @@ See [examples/test_asst.py](./examples/test_asst.py) and
 
 Look carefully at the way you need to import student files in your
 unittest files: see [test_asst.py](./examples/test_asst.py) and/or
-[test_2_asst.py](./examples/test_asst.py).
+[test_2_asst.py](./examples/test_2_asst.py).
 
 
 3. Configure test_runner.py.
