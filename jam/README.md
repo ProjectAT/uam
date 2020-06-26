@@ -20,12 +20,12 @@ a folder named A1.  Therefore, you need the file (see
 [directories.txt](./examples/directories.txt)) with the following
 contents:
 
-`jam/examples/submissions/correct/A1`
-`jam/examples/submissions/failures/A1`
-`jam/examples/submissions/infloop/A1`
-`jam/examples/submissions/nosubmission/A1`
-`jam/examples/submissions/nullpointer/A1`
-`jam/examples/submissions/syntax/A1`
+`jam/examples/submissions/correct/A1`  
+`jam/examples/submissions/failures/A1`  
+`jam/examples/submissions/infloop/A1`  
+`jam/examples/submissions/nosubmission/A1`  
+`jam/examples/submissions/nullpointer/A1`  
+`jam/examples/submissions/syntax/A1`  
 
 
 Note that all paths are relative to the location of
@@ -44,12 +44,12 @@ modify them).
 Starting with your "normal" JUnit4 test file, you create a JAM test
 file as follows:
 
-a. `import edu.toronto.cs.jam.annotations.Description;`
+`import edu.toronto.cs.jam.annotations.Description;`
 
-b. For each @Test method, use the following annotations:
+For each @Test method, use the following annotations:
 
-`@Test(timeout=XXX)`
-`@Description(description="description of your test method")`
+`@Test(timeout=XXX)`  
+`@Description(description="description of your test method")`  
 
 
 The directory [examples/tests](./examples/tests) contains a sample
@@ -129,11 +129,9 @@ You are welcome to contribute your own templates!
 
 2. Some examples:
 
-`python3 templator.py aggregated.json html`
-
-`python3 templator.py aggregated.json txt`
-
-`python3 templator.py aggregated.json markus`
+`python3 templator.py aggregated.json html`  
+`python3 templator.py aggregated.json txt`  
+`python3 templator.py aggregated.json markus`  
 
 See 
   `python3 templator.py --help`

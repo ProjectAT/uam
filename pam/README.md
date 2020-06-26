@@ -11,13 +11,13 @@ our example is in a folder named *A1*.  Therefore, you need the file
 (see [directories.txt](./examples/directories.txt)) with
 the following contents:
 
-`pam/examples/submissions/correct/A1`
-`pam/examples/submissions/errors/A1`
-`pam/examples/submissions/failures/A1`
-`pam/examples/submissions/infloop/A1`
-`pam/examples/submissions/outofstack/A1`
-`pam/examples/submissions/pep8fail/A1`
-`pam/examples/submissions/syntax/A1`
+`pam/examples/submissions/correct/A1`  
+`pam/examples/submissions/errors/A1`  
+`pam/examples/submissions/failures/A1`  
+`pam/examples/submissions/infloop/A1`  
+`pam/examples/submissions/outofstack/A1`  
+`pam/examples/submissions/pep8fail/A1`  
+`pam/examples/submissions/syntax/A1`  
 
 Notice that all paths are relative to the location of [test_runner.py](../test_runner.py).
 
@@ -109,11 +109,9 @@ You are welcome to contribute your own templates!
 
 2. Some examples:
 
-`python3 templator.py aggregated.json html`
-
-`python3 templator.py aggregated.json txt`
-
-`python3 templator.py aggregated.json markus`
+`python3 templator.py aggregated.json html`  
+`python3 templator.py aggregated.json txt`  
+`python3 templator.py aggregated.json markus`  
 
 See 
   `python3 templator.py --help`

@@ -16,7 +16,7 @@ We welcome collaboration and contributions!
 
 You need Python >= 3.3 installed on your system. Then, install the
 requirements listed in the file requirements.txt. The easiest way to
-do this is to use pip (pip for Python 3):
+do this is to use pip (pip3 for Python 3):
 
 `pip install -r /path_to_uam/requirements.txt`
 
