@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
@@ -40,7 +41,7 @@ public class JSonOutputListener extends RunListener {
     private PrintStream output;
 
     /**
-     * Map: testClassName to {Map: testMethodName to TestInfo object}
+     * {testClassName: {testMethodName: TestInfo}}
      */
     private Map<String, Map<String,TestInfo>> testInfo = 
 	new HashMap<String, Map<String, TestInfo>>();
@@ -150,9 +151,15 @@ public class JSonOutputListener extends RunListener {
         wrapper.addProperty(JsonConstants.DATE, "");
         wrapper.addProperty(JsonConstants.ASSIGNMENT, "");
 
+	// Add fully-qualified names of all tests to the wrapper JsonObject.
+	// Exclude initializationErrors.
 	Set<String> testSet = new HashSet<>();
-	testInfo.values().forEach((map) -> testSet.addAll(map.keySet()));
-	JsonArray tests = new Gson().toJsonTree(new ArrayList(testSet)).getAsJsonArray();
+	testInfo.values()
+	    .forEach(map -> testSet.addAll(map.keySet()
+					   .stream()
+					   .filter(name -> !name.contains("initializationError"))
+					   .collect(Collectors.toList())));
+	JsonArray tests = new Gson().toJsonTree(new ArrayList<String>(testSet)).getAsJsonArray();
 	
 	wrapper.add(JsonConstants.TESTS, tests);
 	
@@ -229,17 +236,17 @@ public class JSonOutputListener extends RunListener {
     }
 
     /**
-     * Return a qualified name of class:methodname for a description.
+     * Return a qualified name of class.methodname for a description.
      * @param desc A org.junit.runner.Description
-     * @return A qualified name of class:methodname for the given description
+     * @return A qualified name of class.methodname for the given description
      */
     private String qualifiedName(final org.junit.runner.Description desc) {
-        return desc.getClassName() + ":" + desc.getMethodName();
+        return String.format("%s.%s", desc.getClassName(), desc.getMethodName());
     }
 
     private String description(final org.junit.runner.Description desc) {
 
-    	if (isCompilationError(desc)) { 
+    	if (isCompilationError(desc)) {
 	    return ExceptionExplainer.COMPILE_ERROR_MSG;
 	}
 	return desc.getAnnotation(Description.class).description();
@@ -260,7 +267,7 @@ public class JSonOutputListener extends RunListener {
      */
     private class TestInfo {
 	/* 
-	 * Full qualified name of the unit test.
+	 * Fully qualified name of the unit test.
 	 */
 	String qualifiedName;
 
@@ -292,9 +299,8 @@ public class JSonOutputListener extends RunListener {
 
 	@Override
 	public String toString() {
-	    return (this.qualifiedName + ": " +
-		    this.description + " " + 
-		    this.passed); 
+	    return String.format("%s: %s %s", this.qualifiedName,
+				 this.description, this.passed); 
 	}
     }
 }
