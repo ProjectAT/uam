@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 '''Report Templator.
 Author: Kenneth Ma (2015), under supervision of Dr. Anya Tafliovich
 Author: Anya Tafliovich 2015, 2016

@@ -21,10 +21,10 @@ public class JsonConstants {
      */
     public static JsonObject fakeStudent() {
 	JsonObject student = new JsonObject();
-        student.addProperty("utorid", "");
+        student.addProperty("student_id", "");
         student.addProperty("first", "");
         student.addProperty("last", "");
-        student.addProperty("id", "0000000000");
+        student.addProperty("student_number", "0000000000");
         student.addProperty("section", "");
         student.addProperty("source", "");
         student.addProperty("email", "");
