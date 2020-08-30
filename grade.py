@@ -12,6 +12,9 @@ Anya Tafliovich 2015, 2016, 2019
 '''
 
 import argparse
+import importlib
+import os
+import sys
 import test_runner
 
 
@@ -22,8 +25,8 @@ def read_repodirs(repo_dirs_file):
         dirpath,repo_name
     '''
 
-    return dict((repo_name, dirpath) for [dirpath, repo_name] in
-                line.strip().split(',') for line in repo_dirs_file)
+    return dict((repo_name, dirpath) for [dirpath, repo_name]
+                in (line.strip().split(',') for line in repo_dirs_file))
 
 
 if __name__ == '__main__':
@@ -33,10 +36,17 @@ if __name__ == '__main__':
     PARSER.add_argument('directories_and_names',
                         help='File in format dirpath,repo_name.')
 
+    PARSER.add_argument('config',
+                        help='Config file for test_runner')
+
     PARSER.add_argument('repo_name', nargs='+',
                         help='Names of student repos to test.')
 
     ARGS = PARSER.parse_args()
+
+    HEAD, TAIL = os.path.split(ARGS.config)
+    sys.path.append(HEAD)
+    CONFIG = importlib.import_module(TAIL.split('.')[0])
 
     # read the dirpath,repo_name file
     with open(ARGS.directories_and_names) as rdf:
@@ -44,4 +54,4 @@ if __name__ == '__main__':
 
     # run tester on all given repos
     for repo in ARGS.repo_name:
-        test_runner.execute_tests(REPODIRS[repo])
+        test_runner.execute_tests(REPODIRS[repo], CONFIG)
