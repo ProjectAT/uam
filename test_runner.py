@@ -44,7 +44,8 @@ def execute_tests(student, config):
     # descendents of the process.
     for cmd in config.test_cmd:
         env = os.environ.copy()
-        env['PYTHONPATH'] = ':'.join(sys.path)
+
+        #env['PYTHONPATH'] = ':'.join(sys.path)
         proc = subprocess.Popen(
             cmd, start_new_session=True, shell=True, env=env)
         try:
