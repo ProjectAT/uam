@@ -21,6 +21,9 @@ import sys
 import multiprocessing
 import subprocess
 
+from utils.docker_runner import (DockerConfig, build_docker_command,
+                                 is_docker_available)
+
 
 def execute_tests(student, config):
     '''Run tests for one student.'''
@@ -29,6 +32,12 @@ def execute_tests(student, config):
         os.chdir(student)
     except OSError:
         print('{}: Directory not found.'.format(student), file=sys.stderr)
+        return
+    
+    docker_config = DockerConfig.from_module(config)
+    if docker_config.enabled and not is_docker_available(docker_config.binary):
+        print('{}: Docker is enabled but {!r} was not found on PATH.'.format(
+            student, docker_config.binary), file=sys.stderr)
         return
 
     if config.preamble_cmd:
@@ -43,11 +52,16 @@ def execute_tests(student, config):
     # Note: Not using check_call since we need the PID in order to kill all
     # descendents of the process.
     for cmd in config.test_cmd:
+        if docker_config.enabled:
+            cmd_to_run = build_docker_command(cmd, student, docker_config)
+        else:
+            cmd_to_run = cmd
+
         env = os.environ.copy()
 
         #env['PYTHONPATH'] = ':'.join(sys.path)
         proc = subprocess.Popen(
-            cmd, start_new_session=True, shell=True, env=env)
+            cmd_to_run, start_new_session=True, shell=True, env=env)
         try:
             proc.communicate(timeout=config.timeout)
         except subprocess.TimeoutExpired:

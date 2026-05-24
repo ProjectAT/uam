@@ -1,0 +1,6 @@
+jam/docker_examples/submissions/correct/A1,correct
+jam/docker_examples/submissions/failures/A1,failures
+jam/docker_examples/submissions/infloop/A1,infloop
+jam/docker_examples/submissions/memhog/A1,memhog
+jam/docker_examples/submissions/network/A1,network
+jam/docker_examples/submissions/host_escape/A1,host_escape

@@ -1,0 +1,9 @@
+pam/docker_examples/submissions/correct/A1
+pam/docker_examples/submissions/failures/A1
+pam/docker_examples/submissions/errors/A1
+pam/docker_examples/submissions/infloop/A1
+pam/docker_examples/submissions/forkbomb/A1
+pam/docker_examples/submissions/memhog/A1
+pam/docker_examples/submissions/diskhog/A1
+pam/docker_examples/submissions/network/A1
+pam/docker_examples/submissions/host_escape/A1

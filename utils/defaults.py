@@ -9,3 +9,18 @@ DEFAULT_OUT_JSON_FILE = 'aggregated.json'
 
 DEFAULT_TIMEOUT = 2
 DEFAULT_VERBOSITY = 2
+
+# Docker sandbox defaults. See utils/docker_runner.py and the
+# top-level README for what each setting does.
+
+DEFAULT_DOCKER_ENABLED = False
+DEFAULT_DOCKER_IMAGE = 'python:3.11-slim'
+DEFAULT_DOCKER_CPUS = '1.0'
+DEFAULT_DOCKER_MEMORY = '256m'
+DEFAULT_DOCKER_DISK = '1g'
+DEFAULT_DOCKER_TIMEOUT = 60
+DEFAULT_DOCKER_WORKDIR = '/submission'
+DEFAULT_DOCKER_NETWORK = 'none'
+DEFAULT_DOCKER_DROP_CAPABILITIES = True
+DEFAULT_DOCKER_USER = 'host'   # 'host' -> current EUID:EGID at runtime
+DEFAULT_DOCKER_BINARY = 'docker'

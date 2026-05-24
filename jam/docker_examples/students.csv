@@ -1,0 +1,6 @@
+correct,Alice,Honest,1111111111,alice@example.com
+failures,Bob,Sloppy,2222222222,bob@example.com
+infloop,Dave,Loopy,4444444444,dave@example.com
+memhog,Frank,Heap,6666666666,frank@example.com
+network,Heidi,Wired,8888888888,heidi@example.com
+hostescape,Ivan,Roots,9999999999,ivan@example.com

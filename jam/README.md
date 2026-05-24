@@ -138,6 +138,20 @@ See
 for full information and more options.
 
 
+## Running tests in a Docker sandbox
+
+If you set `docker_enabled = True` in your config, each `test_cmd`
+runs inside a disposable Docker container. The full list of settings
+is in the [top-level README](../README.md#docker-sandbox).
+
+For jam, pick an image that ships with the JDK (e.g.
+`eclipse-temurin:11-jdk-focal`). The classpath in `test_cmd` resolves 
+*inside* the container, so you'll usually want to either (a) stage the 
+JAM jars and tests into the student directory in `preamble_cmd`, or 
+(b) build a custom image that bundles them. Bump `docker_memory` and
+`docker_timeout` — the JVM is hungrier than CPython.
+
+
 ## Support
 
 Please send comments, feedback and bugs to
