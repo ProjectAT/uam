@@ -118,6 +118,19 @@ See
 for full information and more options.
 
 
+## Running tests in a Docker sandbox
+
+If you set `docker_enabled = True` in your config, each `test_cmd`
+runs inside a disposable Docker container. The full list of settings
+is in the [top-level README](../README.md#docker-sandbox).
+
+For pam, use an image with Python (e.g. `python:3.11-slim`). Because
+the command runs inside the container, anything you reference by
+absolute host path must be staged into the student's directory first
+(via `preamble_cmd`, which runs on the host) — the student directory
+is the only thing the container can see.
+
+
 ## Support
 
 Please send comments, feedback and bugs to
